@@ -18,7 +18,7 @@
   --t:.2s ease;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:15px;scroll-behavior:smooth}
+html{font-size:16px;scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
@@ -40,7 +40,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
    ============================================================ */
 .app{display:flex;min-height:100vh;opacity:0;filter:blur(6px);transition:opacity .6s ease,filter .6s ease}
 .app.ready{opacity:1;filter:blur(0)}
-.sidebar{width:160px;background:var(--sidebar);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sidebar{width:180px;background:var(--sidebar);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
 .sidebar-brand{padding:0 16px 20px}
 .sidebar-brand h2{font-size:14px;font-weight:800;color:#FFF;letter-spacing:.03em}
 .sidebar-brand span{font-size:9px;color:#666;letter-spacing:.15em;display:block;margin-top:2px}
@@ -60,8 +60,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 /* ============================================================
    MAIN — Creative canvas
    ============================================================ */
-.main{flex:1;margin-left:160px;padding:32px 40px;display:flex;justify-content:center}
-.main-inner{width:100%;max-width:1060px}
+.main{flex:1;margin-left:180px;padding:40px 48px;display:flex;justify-content:center}
+.main-inner{width:100%;max-width:1280px}
 @media(max-width:768px){.main{padding:20px 16px}}
 .tab-content{display:none}
 .tab-content.active{display:block;animation:in .25s ease}
@@ -69,30 +69,30 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 
 /* ======== HERO — Big watermark date + offset greeting ======== */
 .hero-section{position:relative;margin-bottom:40px}
-.hero-watermark{font-size:clamp(80px,10vw,130px);font-weight:900;line-height:1;color:#E8E8E8;letter-spacing:-.04em;user-select:none;margin-left:-4px}
-.hero-greeting{margin-top:-28px;margin-left:clamp(40px,8vw,100px);position:relative;z-index:1}
-.hero-greeting h3{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-.02em}
-.hero-greeting p{font-size:13px;color:var(--text2);margin-top:4px}
+.hero-watermark{font-size:clamp(100px,12vw,160px);font-weight:900;line-height:1;color:#E8E8E8;letter-spacing:-.04em;user-select:none;margin-left:-4px}
+.hero-greeting{margin-top:-32px;margin-left:clamp(60px,10vw,120px);position:relative;z-index:1}
+.hero-greeting h3{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.02em}
+.hero-greeting p{font-size:15px;color:var(--text2);margin-top:4px}
 .hero-prefix{position:absolute;right:0;top:10px;background:var(--text);color:var(--bg);padding:6px 16px;font-size:10px;letter-spacing:.1em;transform:rotate(2deg)}
 
 /* ======== IRREGULAR STATS ======== */
 .stat-cluster{display:flex;gap:12px;margin-bottom:32px;align-items:flex-start;flex-wrap:wrap}
 .stat-big{background:var(--surface);border:3px solid var(--text);padding:28px 36px;text-align:center}
-.stat-big .val{font-size:48px;font-weight:900;line-height:1}
-.stat-big .lbl{font-size:11px;color:var(--text2);margin-top:6px;letter-spacing:.05em}
-.stat-sm{background:var(--surface2);padding:16px 20px;text-align:center;transform:rotate(-1deg)}
-.stat-sm .val{font-size:24px;font-weight:800}
-.stat-sm .lbl{font-size:10px;color:var(--text3);margin-top:3px}
+.stat-big .val{font-size:56px;font-weight:900;line-height:1}
+.stat-big .lbl{font-size:12px;color:var(--text2);margin-top:6px;letter-spacing:.05em}
+.stat-sm{background:var(--surface2);padding:18px 24px;text-align:center;transform:rotate(-1deg)}
+.stat-sm .val{font-size:28px;font-weight:800}
+.stat-sm .lbl{font-size:11px;color:var(--text3);margin-top:3px}
 .stat-tiny{background:var(--surface);border:1px solid var(--border);padding:10px 14px;font-size:11px;text-align:center;margin-top:12px}
 
 /* ======== ASYMMETRIC CARDS ======== */
 .asym-row{display:flex;gap:12px;margin-bottom:32px;align-items:flex-start}
 .asym-wide{flex:3;display:flex;flex-direction:column;gap:12px}
 .asym-narrow{flex:2;display:flex;flex-direction:column;gap:12px;margin-top:20px}
-.card-lg{background:var(--surface);border:2px solid var(--text);padding:28px;position:relative}
-.card-lg .c-label{font-size:9px;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
-.card-lg h4{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
-.card-lg p{font-size:12px;color:var(--text2);line-height:1.7}
+.card-lg{background:var(--surface);border:2px solid var(--text);padding:32px;position:relative}
+.card-lg .c-label{font-size:10px;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+.card-lg h4{font-size:28px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+.card-lg p{font-size:14px;color:var(--text2);line-height:1.7}
 .card-lg .corner{position:absolute;top:-10px;right:20px;background:var(--text);color:var(--bg);padding:4px 14px;font-size:9px;letter-spacing:.1em;transform:rotate(1deg)}
 .card-md{background:var(--surface);border:1px solid var(--border);padding:18px;margin-left:-12px;box-shadow:3px 3px 0 var(--text)}
 .card-md h4{font-size:14px;font-weight:700}
@@ -105,8 +105,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .bleed-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
 .bleed-img .placeholder{font-size:13px;color:#FFF;letter-spacing:.1em;z-index:0}
 .bleed-text{flex:1;background:var(--text);color:var(--bg);padding:36px;display:flex;flex-direction:column;justify-content:center}
-.bleed-text h4{font-size:28px;font-weight:900;margin-bottom:6px}
-.bleed-text p{font-size:12px;color:#A0A0A0;line-height:1.7}
+.bleed-text h4{font-size:32px;font-weight:900;margin-bottom:8px}
+.bleed-text p{font-size:14px;color:#A0A0A0;line-height:1.7}
 .bleed-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;background:var(--surface);border:2px solid var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;z-index:10;transition:var(--t)}
 .bleed-nav:hover{background:var(--text);color:var(--bg)}
 .bleed-prev{left:-20px}.bleed-next{right:-20px}
