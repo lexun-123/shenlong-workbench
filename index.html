@@ -23,9 +23,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
 /* SPLASH */
-.splash{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .5s}
-.splash.hide{opacity:0;visibility:hidden;pointer-events:none}
-.splash-inner{text-align:center}
+.splash{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .6s ease,transform .6s ease}
+.splash.hide{opacity:0;transform:scale(1.05);visibility:hidden;pointer-events:none}
+.splash-inner{text-align:center;transition:transform .5s ease,opacity .5s ease}
+.splash.hide .splash-inner{transform:translateY(-20px);opacity:0}
 .splash-line{width:1px;height:60px;background:var(--text);margin:0 auto 28px;animation:sLine .8s ease forwards}
 .splash h1{font-size:clamp(40px,7vw,72px);font-weight:900;letter-spacing:.12em;opacity:0;animation:sFade .7s .3s ease forwards}
 .splash .sub{font-size:12px;color:var(--text3);letter-spacing:.3em;margin-top:14px;opacity:0;animation:sFade .7s .6s ease forwards}
@@ -33,6 +34,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 @keyframes sLine{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 @keyframes sFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes sArrow{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(4px)}}
+
+/* Main entrance animation */
+.app{display:flex;min-height:100vh;animation:appIn .6s .2s ease both}
+@keyframes appIn{from{opacity:0;filter:blur(8px)}to{opacity:1;filter:blur(0)}}
 
 /* ============================================================
    APP SHELL — Text sidebar
@@ -419,7 +424,7 @@ function isFav(type,id){return favs.some(function(f){return f.type===type&&f.id=
 function toggleFav(item){var i=favs.findIndex(function(f){return f.type===item.type&&f.id===item.id});if(i>-1){favs.splice(i,1);toast('已取消收藏')}else{favs.push(item);toast('已收藏')}S('fav',favs)}
 
 // SPLASH
-function dismissSplash(){document.getElementById('splash').classList.add('hide');setTimeout(function(){var s=document.getElementById('splash');if(s)s.remove()},500)}
+function dismissSplash(){var s=document.getElementById('splash');if(!s||s.classList.contains('hide'))return;s.classList.add('hide');setTimeout(function(){if(s.parentNode)s.remove()},700)}
 setTimeout(function(){dismissSplash()},3500);
 
 // KEYBOARD
