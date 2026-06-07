@@ -38,28 +38,33 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 /* ============================================================
    APP SHELL — Text sidebar
    ============================================================ */
-.app{min-height:100vh;opacity:0;filter:blur(6px);transition:opacity .6s ease,filter .6s ease}
+.app{display:flex;min-height:100vh;opacity:0;filter:blur(6px);transition:opacity .6s ease,filter .6s ease}
 .app.ready{opacity:1;filter:blur(0)}
-.header{position:sticky;top:0;z-index:100;background:rgba(245,245,245,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;height:50px;display:flex;align-items:center;gap:28px}
-.header-brand{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
-.header-brand b{font-size:14px;font-weight:800}
-.header-brand span{font-size:9px;color:var(--text3);letter-spacing:.1em}
-.header-nav{display:flex;gap:0;height:100%;flex:1}
-.header-nav button{height:100%;padding:0 12px;border:none;border-bottom:2px solid transparent;background:none;font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font);transition:var(--t);white-space:nowrap}
-.header-nav button:hover{color:var(--text)}
-.header-nav button.active{color:var(--text);font-weight:600;border-bottom-color:var(--text)}
-.header-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.header-actions button{font-size:10px;padding:4px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:pointer;font-family:var(--font);color:var(--text2);transition:var(--t)}
-.header-actions button:hover{color:var(--text);border-color:var(--text)}
-.header-actions .hdr-ai{background:var(--text);color:var(--bg);border-color:var(--text);font-weight:600;padding:4px 12px}
-.hdr-lvl{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:var(--surface2);cursor:pointer;border:1px solid var(--border)}
 
 /* ============================================================
-   MAIN — Full width canvas
+   SIDEBAR
    ============================================================ */
-.main{padding:32px 36px;overflow:visible}
-.main-inner{width:100%}
-@media(max-width:768px){.main{padding:20px 16px}}
+.sidebar{width:160px;background:var(--sidebar);display:flex;flex-direction:column;padding:20px 0;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sidebar-brand{padding:0 14px 16px}
+.sidebar-brand h2{font-size:13px;font-weight:800;color:#FFF;letter-spacing:.03em}
+.sidebar-brand span{font-size:9px;color:#666;letter-spacing:.15em}
+.sidebar-nav{flex:1;padding:0 6px}
+.sidebar-nav .sec-label{font-size:8px;color:#555;letter-spacing:.1em;text-transform:uppercase;padding:10px 8px 3px;font-weight:600}
+.sidebar-nav button{display:flex;align-items:center;gap:6px;width:100%;padding:5px 8px;border:none;background:transparent;font-size:11px;color:#999;cursor:pointer;font-family:var(--font);border-radius:4px;transition:var(--t);text-align:left}
+.sidebar-nav button:hover{background:#2A2A2D;color:#CCC}
+.sidebar-nav button.active{background:#333;color:#FFF;font-weight:600}
+.sidebar-nav button .sb-icon{font-size:12px;opacity:.6;width:16px;text-align:center;flex-shrink:0}
+.sidebar-bottom{margin-top:auto;padding:12px 6px;border-top:1px solid rgba(255,255,255,.06)}
+.sidebar-bottom button{display:flex;align-items:center;gap:6px;width:100%;padding:5px 8px;border:none;background:transparent;font-size:10px;color:#777;cursor:pointer;font-family:var(--font);border-radius:4px;transition:var(--t);text-align:left}
+.sidebar-bottom button:hover{background:#2A2A2D;color:#BBB}
+.sidebar-bottom .sb-lvl{display:inline-flex;align-items:center;background:#333;color:#FFF;padding:1px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-left:auto}
+
+/* ============================================================
+   MAIN
+   ============================================================ */
+.main{flex:1;margin-left:160px;padding:36px 40px;display:flex;justify-content:center}
+.main-inner{width:100%;max-width:1100px}
+@media(max-width:768px){.main{padding:24px 16px}}
 .tab-content{display:none}
 .tab-content.active{display:block;animation:in .25s ease}
 @keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
@@ -293,24 +298,27 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 <!-- APP -->
 <div class="app">
 
-<!-- Header -->
-<header class="header">
-  <div class="header-brand"><b>神龙工作台</b><span>LEXUN</span></div>
-  <nav class="header-nav" id="mainNav">
-    <button class="active" data-tab="home">首页</button>
-    <button data-tab="brand">品牌</button>
-    <button data-tab="event">活动</button>
-    <button data-tab="plan">策划</button>
-    <button data-tab="copy">推文</button>
-    <button data-tab="video">视频</button>
-    <button data-tab="tools">工具箱</button>
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-brand"><h2>神龙工作台</h2><span>LEXUN</span></div>
+  <nav class="sidebar-nav">
+    <div class="sec-label">工作区</div>
+    <button class="active" data-tab="home"><span class="sb-icon">⌂</span>首页</button>
+    <button data-tab="brand"><span class="sb-icon">◇</span>品牌</button>
+    <button data-tab="event"><span class="sb-icon">◎</span>活动</button>
+    <div class="sec-label">内容</div>
+    <button data-tab="plan"><span class="sb-icon">◉</span>策划</button>
+    <button data-tab="copy"><span class="sb-icon">§</span>推文</button>
+    <button data-tab="video"><span class="sb-icon">▷</span>视频</button>
+    <div class="sec-label">其他</div>
+    <button data-tab="tools"><span class="sb-icon">＋</span>工具箱</button>
   </nav>
-  <div class="header-actions">
-    <button onclick="openAdventure()"><span class="hdr-lvl" id="sideLvl">1</span> 冒险</button>
-    <button class="hdr-ai" onclick="toggleAIPanel()">✦ AI</button>
-    <button onclick="toggleSettings()">⚙</button>
+  <div class="sidebar-bottom">
+    <button onclick="openAdventure()"><span class="sb-icon">⚔</span>冒险 <span class="sb-lvl" id="sideLvl">1</span></button>
+    <button onclick="toggleAIPanel()"><span class="sb-icon">✦</span>AI 助理</button>
+    <button onclick="toggleSettings()"><span class="sb-icon">⚙</span>设置</button>
   </div>
-</header>
+</aside>
 
 <!-- Main -->
 <main class="main"><div class="main-inner" id="mainContent"></div></main>
@@ -421,8 +429,8 @@ setTimeout(function(){dismissSplash()},3500);
 document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.isContentEditable)return;var meta=e.metaKey||e.ctrlKey;if(meta&&e.key>='1'&&e.key<='8'){e.preventDefault();var tabs=['home','brand','event','plan','copy','video','tools','adventure'];switchTab(tabs[parseInt(e.key)-1])}if(meta&&e.key==='j'){e.preventDefault();toggleAIPanel()}if(e.key==='Escape'){closeEditor();closeAdv();document.querySelectorAll('.ai-overlay.show,.settings-overlay.show').forEach(function(p){p.classList.remove('show')});closeCalPopup()}});
 
 // TABS
-function switchTab(tab){currentTab=tab;document.querySelectorAll('#mainNav button').forEach(function(b){b.classList.toggle('active',b.dataset.tab===tab)});render();updateAIContext();renderAIQuickActions()}
-document.getElementById('mainNav').addEventListener('click',function(e){var btn=e.target.closest('button');if(btn&&btn.dataset.tab)switchTab(btn.dataset.tab)});
+function switchTab(tab){currentTab=tab;document.querySelectorAll('.sidebar-nav button').forEach(function(b){b.classList.toggle('active',b.dataset.tab===tab)});render();updateAIContext();renderAIQuickActions()}
+document.querySelector('.sidebar-nav').addEventListener('click',function(e){var btn=e.target.closest('button');if(btn&&btn.dataset.tab)switchTab(btn.dataset.tab)});
 
 // RENDER
 function render(){var m=document.getElementById('mainContent'),h='';
@@ -449,7 +457,6 @@ function renderHome(){var n=new Date(),hr=n.getHours(),greet=hr<12?'早上好':h
 return'<div class="hero-section"><div class="hero-watermark">'+(n.getMonth()+1)+'.'+('0'+n.getDate()).slice(-2)+'</div><div class="hero-greeting"><h3>'+(pfx?'<span style="display:inline-block;background:var(--text);color:var(--bg);padding:3px 12px;font-size:14px;letter-spacing:.05em;font-weight:700;margin-right:8px;vertical-align:middle;font-family:var(--font)">'+pfx+'</span>':'')+'<span>'+greet+'，LEXUN</span></h3><p>本月 2 场活动 · '+pe+' 项已完成 · '+drafts.length+' 份草稿 · <span style="cursor:pointer;border-bottom:1px dashed var(--text);font-weight:600" onclick="toggleAIPanel()" title="AI 助理">✦ AI 助理已就绪</span></p></div><div class="hero-prefix">⚡ Lv.'+lvl+'</div></div>'+
 '<div class="stat-cluster"><div class="stat-big"><div class="val">2</div><div class="lbl">本月活动</div></div><div class="stat-sm"><div class="val">'+drafts.length+'</div><div class="lbl">草稿</div></div><div class="stat-tiny">距下个<br>活动<br><b>'+(eventDate?Math.ceil((new Date(eventDate)-n)/86400000)+'天':'—')+'</b></div><div class="stat-sm" style="transform:rotate(1deg)"><div class="val">'+pe+'/8</div><div class="lbl">活动进度</div></div></div>'+
 '<div class="asym-row"><div class="asym-wide"><div class="card-lg" onclick="switchTab(\x27copy\x27)" style="cursor:pointer"><div class="c-label">快速入口 · 点击进入</div><h4>今天写点什么？</h4><p>智能组装推文 · 生成转发语 · 查看车型卖点 · 策划活动方案 · <span style="background:var(--text);color:var(--bg);padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700">✦ AI 辅助</span></p><div class="corner">常用</div></div></div><div class="asym-narrow"><div class="card-md" onclick="switchTab(\'brand\')"><h4>查车型卖点 →</h4><p style="font-size:10px;color:var(--text3)">7 款车型完整知识库</p></div><div class="card-offset" onclick="openEditor(\'空白编辑器\')"><h4>打开编辑器 →</h4><p style="font-size:10px;color:var(--text3)">卖点侧边栏辅助</p></div></div></div>'+
-(function(){var all=getAllModels();carIndex=carIndex%all.length;var c=all[carIndex];return'<div class="bleed-row" id="carCarousel"><button class="bleed-nav bleed-prev" onclick="prevCar()">◂</button><div class="bleed-img"><img src="'+c.img+'" alt="'+c.model+'" onerror="this.style.display=\x27none\x27" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div class="placeholder">'+c.model+'</div></div><div class="bleed-text"><h4>'+c.name+' '+c.model+'</h4><p>'+c.pos+'<br>'+c.desc+'</p><div style="margin-top:12px"><button class="btn btn-sm" style="border-color:var(--bg);color:var(--bg)" onclick="switchTab(\x27brand\x27)">查看品牌页</button></div></div><button class="bleed-nav bleed-next" onclick="nextCar()">▸</button><div class="bleed-dots">'+all.map(function(m,i){return'<span class="'+(i===carIndex?'active':'')+'" onclick="carIndex='+i+';render()"></span>'}).join('')+'</div></div>'})()+
 '<div class="tag-cloud">'+BRANDS.peugeot.keywords.slice(0,4).map(function(k,i){var cls=i%2===0?'t-bold':i===1?'t-light':'t-dark';return'<span class="'+cls+'" onclick="copy(\''+k+'\')">'+k+'</span>'}).join('')+BRANDS.citroen.keywords.slice(0,4).map(function(k,i){var cls=i%2===0?'t-up':'t-light';return'<span class="'+cls+'" onclick="copy(\''+k+'\')">'+k+'</span>'}).join('')+'</div>'+
 '<div class="dark-break"><div><h3>冒险进度</h3><p>'+(pfx?'⚜ '+pfx+' · ':'')+'Lv.'+lvl+' · '+xp+' / '+xpn+' XP · 距下一级还需 '+(xpn-xp)+' XP</p></div><div style="display:flex;gap:16px;font-size:12px"><div style="text-align:center;font-size:24px">'+Object.keys(ACHIEVEMENTS).length+'</div><div style="font-size:10px;color:#A0A0A0;margin-top:8px">成就</div></div></div>'+
 '<div style="display:grid;grid-template-columns:1fr 1fr 260px;gap:8px;margin-top:24px">'+
