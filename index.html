@@ -35,14 +35,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 @keyframes sFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes sArrow{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(4px)}}
 
-/* Main entrance animation */
-.app{display:flex;min-height:100vh;animation:appIn .6s .2s ease both}
-@keyframes appIn{from{opacity:0;filter:blur(8px)}to{opacity:1;filter:blur(0)}}
-
 /* ============================================================
    APP SHELL — Text sidebar
    ============================================================ */
-.app{display:flex;min-height:100vh}
+.app{display:flex;min-height:100vh;opacity:0;filter:blur(6px);transition:opacity .6s ease,filter .6s ease}
+.app.ready{opacity:1;filter:blur(0)}
 .sidebar{width:160px;background:var(--sidebar);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
 .sidebar-brand{padding:0 16px 20px}
 .sidebar-brand h2{font-size:14px;font-weight:800;color:#FFF;letter-spacing:.03em}
@@ -424,7 +421,7 @@ function isFav(type,id){return favs.some(function(f){return f.type===type&&f.id=
 function toggleFav(item){var i=favs.findIndex(function(f){return f.type===item.type&&f.id===item.id});if(i>-1){favs.splice(i,1);toast('已取消收藏')}else{favs.push(item);toast('已收藏')}S('fav',favs)}
 
 // SPLASH
-function dismissSplash(){var s=document.getElementById('splash');if(!s||s.classList.contains('hide'))return;s.classList.add('hide');setTimeout(function(){if(s.parentNode)s.remove()},700)}
+function dismissSplash(){var s=document.getElementById('splash');if(!s||s.classList.contains('hide'))return;s.classList.add('hide');document.querySelector('.app').classList.add('ready');setTimeout(function(){if(s.parentNode)s.remove()},800)}
 setTimeout(function(){dismissSplash()},3500);
 
 // KEYBOARD
