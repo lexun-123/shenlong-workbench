@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v4 创意排版预览 — 编辑工作室</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#F5F5F5}
+
+/* Top banner */
+.banner{background:#1A1A1A;color:#FFF;padding:8px 24px;font-size:11px;text-align:center;letter-spacing:.15em}
+
+/* Layout shell */
+.app{display:flex;min-height:100vh}
+.sidebar{width:56px;background:#1C1C1E;display:flex;flex-direction:column;align-items:center;padding-top:20px;gap:20px;flex-shrink:0}
+.sidebar .dot{width:8px;height:8px;border-radius:50%;background:#444}
+.sidebar .dot.active{background:#FFF}
+
+/* Main — creative canvas */
+.main{flex:1;padding:32px 40px;max-width:1100px}
+@media(max-width:768px){.main{padding:20px}}
+
+/* ======== CREATIVE ZONE 1: Hero headline off-grid ======== */
+.hero-section{margin-bottom:48px;position:relative}
+.hero-section .big-date{font-size:120px;font-weight:900;line-height:1;color:#E8E8E8;letter-spacing:-.04em;user-select:none;margin-left:-8px}
+.hero-section .greeting{margin-top:-32px;margin-left:80px;position:relative;z-index:1}
+.hero-section .greeting h2{font-size:36px;font-weight:800;letter-spacing:-.02em}
+.hero-section .greeting p{font-size:13px;color:#6B6B6B;margin-top:4px}
+.hero-section .accent-block{position:absolute;right:0;top:20px;width:120px;height:120px;background:#1A1A1A;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:.1em;transform:rotate(2deg)}
+
+/* ======== CREATIVE ZONE 2: Irregular stat cluster ======== */
+.stat-cluster{display:flex;gap:16px;margin-bottom:40px;align-items:flex-start;flex-wrap:wrap}
+.stat-big{background:#FFF;border:3px solid #1A1A1A;padding:32px 40px;text-align:center;margin-top:8px}
+.stat-big .val{font-size:56px;font-weight:900;line-height:1}
+.stat-big .lbl{font-size:12px;color:#6B6B6B;margin-top:8px;letter-spacing:.05em}
+.stat-small{background:#F0F0F0;padding:20px 24px;text-align:center;transform:rotate(-1.5deg)}
+.stat-small .val{font-size:28px;font-weight:800}
+.stat-small .lbl{font-size:10px;color:#9E9E9E;margin-top:4px}
+.stat-tiny{background:#FFF;border:1px solid #E0E0E0;padding:14px 18px;font-size:12px;text-align:center;margin-top:16px}
+
+/* ======== CREATIVE ZONE 3: Asymmetric cards ======== */
+.asym-grid{display:flex;gap:12px;margin-bottom:40px;align-items:flex-start}
+.asym-col-wide{flex:3;display:flex;flex-direction:column;gap:12px}
+.asym-col-narrow{flex:2;display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.card-large{background:#FFF;border:2px solid #1A1A1A;padding:28px;position:relative}
+.card-large .c-label{font-size:9px;color:#9E9E9E;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+.card-large h4{font-size:28px;font-weight:900;letter-spacing:-.02em;line-height:1.1;margin-bottom:8px}
+.card-large p{font-size:13px;color:#6B6B6B;line-height:1.7}
+.card-large .corner-tag{position:absolute;top:-10px;right:20px;background:#1A1A1A;color:#FFF;padding:4px 14px;font-size:10px;letter-spacing:.1em;transform:rotate(1deg)}
+.card-medium{background:#FFF;border:1px solid #E0E0E0;padding:20px;margin-left:-12px;box-shadow:4px 4px 0 #1A1A1A}
+.card-medium h4{font-size:16px;font-weight:700;margin-bottom:4px}
+.card-medium p{font-size:11px;color:#6B6B6B}
+.card-offset{background:#FFF;border:1px solid #E0E0E0;padding:18px;margin-right:-20px;transform:rotate(.5deg)}
+.card-offset h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.card-offset p{font-size:11px;color:#9E9E9E}
+
+/* ======== CREATIVE ZONE 4: Bleeding image card ======== */
+.bleed-row{display:flex;gap:0;margin:40px -40px;align-items:stretch}
+.bleed-img{flex:1;min-height:240px;background:linear-gradient(135deg,#D0D0D0,#A0A0A0);display:flex;align-items:center;justify-content:center;font-size:13px;color:#FFF;letter-spacing:.1em;position:relative;overflow:hidden}
+.bleed-img::after{content:'车型图片';position:absolute;font-size:40px;font-weight:900;opacity:.15}
+.bleed-text{flex:1;background:#1A1A1A;color:#FFF;padding:40px;display:flex;flex-direction:column;justify-content:center}
+.bleed-text h4{font-size:32px;font-weight:900;margin-bottom:8px}
+.bleed-text p{font-size:13px;color:#A0A0A0;line-height:1.7}
+@media(max-width:768px){.bleed-row{flex-direction:column;margin:32px -20px}}
+
+/* ======== CREATIVE ZONE 5: Scattered tags ======== */
+.tag-cloud{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px;justify-content:center}
+.tag-cloud span{padding:6px 16px;font-size:12px;cursor:pointer;transition:all .2s}
+.tag-bold{border:2px solid #1A1A1A;background:#FFF;font-weight:700;transform:rotate(-1deg)}
+.tag-light{border:1px solid #D0D0D0;background:#FFF;transform:rotate(.5deg)}
+.tag-dark{background:#1A1A1A;color:#FFF;border:2px solid #1A1A1A}
+.tag-offset{border:1px solid #D0D0D0;background:#FFF;margin-top:-8px}
+.tag-cloud span:hover{transform:scale(1.08) rotate(0deg);box-shadow:2px 2px 0 #1A1A1A}
+
+/* ======== CREATIVE ZONE 6: Bold black section ======== */
+.dark-break{margin:40px -40px;background:#1A1A1A;padding:48px 56px;color:#FFF;display:flex;gap:40px;align-items:center}
+@media(max-width:768px){.dark-break{flex-direction:column;margin:32px -20px;padding:32px 24px}}
+.dark-break h3{font-size:28px;font-weight:900;letter-spacing:-.02em;margin-bottom:8px}
+.dark-break p{font-size:13px;color:#8A8A8A;line-height:1.7}
+.dark-break .highlight{color:#FFF;font-weight:700;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+
+/* Note */
+.note{text-align:center;padding:40px 0;font-size:11px;color:#B0B0B0;letter-spacing:.1em}
+.note span{background:#1A1A1A;color:#FFF;padding:2px 8px}
+</style>
+</head>
+<body>
+<div class="banner">LO-FI PREVIEW — 编辑工作室创意排版方向 — 不是最终设计，只展示布局语言</div>
+
+<div class="app">
+  <!-- Mini sidebar -->
+  <div class="sidebar">
+    <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  </div>
+
+  <div class="main">
+
+    <!-- ZONE 1: Hero headline — big date bleed + offset greeting -->
+    <div class="hero-section">
+      <div class="big-date">06.08</div>
+      <div class="greeting">
+        <h2>早上好，LEXUN</h2>
+        <p>本月 2 场活动 · 3 份草稿 · 今天还没写过推文</p>
+      </div>
+      <div class="accent-block">⚡<br>Lv.5</div>
+    </div>
+
+    <!-- ZONE 2: Irregular stats -->
+    <div class="stat-cluster">
+      <div class="stat-big"><div class="val">2</div><div class="lbl">本月活动</div></div>
+      <div class="stat-small"><div class="val">3</div><div class="lbl">草稿</div></div>
+      <div class="stat-tiny">距下个<br>活动<br><b>12 天</b></div>
+      <div class="stat-small" style="transform:rotate(1deg);margin-top:4px"><div class="val">4/8</div><div class="lbl">活动进度</div></div>
+    </div>
+
+    <!-- ZONE 3: Asymmetric card layout -->
+    <div class="asym-grid">
+      <div class="asym-col-wide">
+        <div class="card-large">
+          <div class="c-label">快速入口</div>
+          <h4>今天写点什么？</h4>
+          <p>智能组装推文 · 生成转发语 · 查看车型卖点 · 策划活动</p>
+          <div class="corner-tag">常用</div>
+        </div>
+      </div>
+      <div class="asym-col-narrow">
+        <div class="card-medium"><h4>待办事项</h4><p>2 项待处理</p></div>
+        <div class="card-offset" style="margin-top:8px"><h4>草稿箱</h4><p>3 份草稿</p></div>
+      </div>
+    </div>
+
+    <!-- ZONE 4: Bleeding image + dark text -->
+    <div class="bleed-row">
+      <div class="bleed-img">408</div>
+      <div class="bleed-text">
+        <h4>东风标致 408</h4>
+        <p>新法式臻品家轿 · 狮魂美学设计 · 点击查看完整卖点库 →</p>
+      </div>
+    </div>
+
+    <!-- ZONE 5: Scattered tag cloud -->
+    <div class="tag-cloud">
+      <span class="tag-bold">狮魂美学</span>
+      <span class="tag-light">燃擎</span>
+      <span class="tag-dark">CLDR 大师级底盘</span>
+      <span class="tag-offset">弯道艺术家</span>
+      <span class="tag-bold">PHC 魔毯悬架</span>
+      <span class="tag-light">龙耀</span>
+      <span class="tag-offset">法式舒适</span>
+      <span class="tag-dark">自在每一程</span>
+    </div>
+
+    <!-- ZONE 6: Dark break -->
+    <div class="dark-break">
+      <div style="flex:1">
+        <h3>冒险进度</h3>
+        <p>⚜ <span class="highlight">白银编辑</span> · Lv.5 · 620/1000 XP · 下次升级还需 380 XP</p>
+      </div>
+      <div style="display:flex;gap:12px;font-size:12px">
+        <div style="text-align:center">🏆<br>12</div>
+        <div style="text-align:center">🔥<br>×1.5</div>
+      </div>
+    </div>
+
+    <div class="note">以上为<span>布局方向</span>预览，不是最终设计。确认方向后搭建完整功能版。</div>
+  </div>
+</div>
+</body>
+</html>

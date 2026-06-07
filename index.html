@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>神龙工作台 — LEXUN</title>
+<style>
+/* ============================================================
+   CREATIVE STUDIO DESIGN SYSTEM
+   ============================================================ */
+:root {
+  --bg:#F5F5F5; --surface:#FFF; --surface2:#F0F0F0;
+  --text:#1A1A1A; --text2:#6B6B6B; --text3:#9E9E9E;
+  --border:#E0E0E0; --border2:#CCC;
+  --sidebar:#1C1C1E;
+  --peugeot:#003DA5; --citroen:#C4411E; --gold:#C4A44A; --green:#2E7D32;
+  --font:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+  --t:.2s ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* SPLASH */
+.splash{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .5s}
+.splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.splash-inner{text-align:center}
+.splash-line{width:1px;height:60px;background:var(--text);margin:0 auto 28px;animation:sLine .8s ease forwards}
+.splash h1{font-size:clamp(40px,7vw,72px);font-weight:900;letter-spacing:.12em;opacity:0;animation:sFade .7s .3s ease forwards}
+.splash .sub{font-size:12px;color:var(--text3);letter-spacing:.3em;margin-top:14px;opacity:0;animation:sFade .7s .6s ease forwards}
+.splash .hint{font-size:10px;color:var(--text3);margin-top:40px;opacity:0;animation:sArrow 1s 1s ease infinite}
+@keyframes sLine{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes sFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes sArrow{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(4px)}}
+
+/* ============================================================
+   APP SHELL — Text sidebar
+   ============================================================ */
+.app{display:flex;min-height:100vh}
+.sidebar{width:160px;background:var(--sidebar);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sidebar-brand{padding:0 16px 20px}
+.sidebar-brand h2{font-size:14px;font-weight:800;color:#FFF;letter-spacing:.03em}
+.sidebar-brand span{font-size:9px;color:#666;letter-spacing:.15em;display:block;margin-top:2px}
+.sidebar-nav{flex:1;padding:0 8px}
+.sidebar-nav .sec-label{font-size:9px;color:#555;letter-spacing:.12em;text-transform:uppercase;padding:14px 10px 6px;font-weight:600}
+.sidebar-nav button{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border:none;background:transparent;font-size:12px;color:#999;cursor:pointer;font-family:var(--font);border-radius:4px;transition:var(--t);text-align:left;letter-spacing:.02em}
+.sidebar-nav button:hover{background:#2A2A2D;color:#CCC}
+.sidebar-nav button.active{background:#333;color:#FFF;font-weight:600}
+.sidebar-nav button .sb-icon{font-size:13px;opacity:.6;width:18px;text-align:center;flex-shrink:0}
+.sidebar-nav button.active .sb-icon{opacity:1}
+.sidebar-bottom{margin-top:auto;padding:16px 8px;border-top:1px solid rgba(255,255,255,.06)}
+.sidebar-bottom button{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border:none;background:transparent;font-size:11px;color:#777;cursor:pointer;font-family:var(--font);border-radius:4px;transition:var(--t);text-align:left}
+.sidebar-bottom button:hover{background:#2A2A2D;color:#BBB}
+.sidebar-bottom .sb-lvl{display:inline-flex;align-items:center;gap:4px;background:#333;color:#FFF;padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700}
+.sidebar-bottom .sb-ai{background:#FFF;color:var(--sidebar);padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700}
+
+/* ============================================================
+   MAIN — Creative canvas
+   ============================================================ */
+.main{flex:1;margin-left:160px;padding:32px 40px;max-width:calc(160px + 1060px)}
+@media(max-width:768px){.main{padding:20px 16px}}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ======== HERO — Big watermark date + offset greeting ======== */
+.hero-section{position:relative;margin-bottom:40px}
+.hero-watermark{font-size:clamp(80px,10vw,130px);font-weight:900;line-height:1;color:#E8E8E8;letter-spacing:-.04em;user-select:none;margin-left:-4px}
+.hero-greeting{margin-top:-28px;margin-left:clamp(40px,8vw,100px);position:relative;z-index:1}
+.hero-greeting h3{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-.02em}
+.hero-greeting p{font-size:13px;color:var(--text2);margin-top:4px}
+.hero-prefix{position:absolute;right:0;top:10px;background:var(--text);color:var(--bg);padding:6px 16px;font-size:10px;letter-spacing:.1em;transform:rotate(2deg)}
+
+/* ======== IRREGULAR STATS ======== */
+.stat-cluster{display:flex;gap:12px;margin-bottom:32px;align-items:flex-start;flex-wrap:wrap}
+.stat-big{background:var(--surface);border:3px solid var(--text);padding:28px 36px;text-align:center}
+.stat-big .val{font-size:48px;font-weight:900;line-height:1}
+.stat-big .lbl{font-size:11px;color:var(--text2);margin-top:6px;letter-spacing:.05em}
+.stat-sm{background:var(--surface2);padding:16px 20px;text-align:center;transform:rotate(-1deg)}
+.stat-sm .val{font-size:24px;font-weight:800}
+.stat-sm .lbl{font-size:10px;color:var(--text3);margin-top:3px}
+.stat-tiny{background:var(--surface);border:1px solid var(--border);padding:10px 14px;font-size:11px;text-align:center;margin-top:12px}
+
+/* ======== ASYMMETRIC CARDS ======== */
+.asym-row{display:flex;gap:12px;margin-bottom:32px;align-items:flex-start}
+.asym-wide{flex:3;display:flex;flex-direction:column;gap:12px}
+.asym-narrow{flex:2;display:flex;flex-direction:column;gap:12px;margin-top:20px}
+.card-lg{background:var(--surface);border:2px solid var(--text);padding:28px;position:relative}
+.card-lg .c-label{font-size:9px;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+.card-lg h4{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.card-lg p{font-size:12px;color:var(--text2);line-height:1.7}
+.card-lg .corner{position:absolute;top:-10px;right:20px;background:var(--text);color:var(--bg);padding:4px 14px;font-size:9px;letter-spacing:.1em;transform:rotate(1deg)}
+.card-md{background:var(--surface);border:1px solid var(--border);padding:18px;margin-left:-12px;box-shadow:3px 3px 0 var(--text)}
+.card-md h4{font-size:14px;font-weight:700}
+.card-offset{background:var(--surface);border:1px solid var(--border);padding:16px;margin-right:-16px;transform:rotate(.5deg)}
+
+/* ======== BLEEDING IMAGE SECTION ======== */
+.bleed-row{display:flex;gap:0;margin:36px -40px;align-items:stretch;position:relative}
+@media(max-width:768px){.bleed-row{flex-direction:column;margin:28px -16px}}
+.bleed-img{flex:1;min-height:220px;background:linear-gradient(135deg,#D0D0D0,#A0A0A0);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.bleed-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.bleed-img .placeholder{font-size:13px;color:#FFF;letter-spacing:.1em;z-index:0}
+.bleed-text{flex:1;background:var(--text);color:var(--bg);padding:36px;display:flex;flex-direction:column;justify-content:center}
+.bleed-text h4{font-size:28px;font-weight:900;margin-bottom:6px}
+.bleed-text p{font-size:12px;color:#A0A0A0;line-height:1.7}
+.bleed-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;background:var(--surface);border:2px solid var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;z-index:10;transition:var(--t)}
+.bleed-nav:hover{background:var(--text);color:var(--bg)}
+.bleed-prev{left:-20px}.bleed-next{right:-20px}
+@media(max-width:768px){.bleed-prev{left:8px}.bleed-next{right:8px}}
+.bleed-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10}
+.bleed-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:var(--t)}
+.bleed-dots span.active{background:#FFF}
+
+/* ======== DARK BREAK ======== */
+.dark-break{margin:36px -40px;background:var(--text);padding:40px 56px;color:var(--bg);display:flex;gap:32px;align-items:center}
+@media(max-width:768px){.dark-break{flex-direction:column;margin:28px -16px;padding:28px 24px}}
+.dark-break h3{font-size:24px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
+.dark-break p{font-size:12px;color:#8A8A8A;line-height:1.7}
+
+/* ======== TAG CLOUD ======== */
+.tag-cloud{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;justify-content:center}
+.tag-cloud .t-bold{padding:6px 16px;font-size:12px;cursor:pointer;border:2px solid var(--text);background:var(--surface);font-weight:700;transform:rotate(-1deg)}
+.tag-cloud .t-light{padding:6px 14px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);transform:rotate(.5deg)}
+.tag-cloud .t-dark{padding:6px 16px;font-size:12px;cursor:pointer;background:var(--text);color:var(--bg)}
+.tag-cloud .t-up{padding:5px 12px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);margin-top:-6px}
+.tag-cloud span:hover{transform:scale(1.06) rotate(0deg)!important;box-shadow:2px 2px 0 var(--text);z-index:1;position:relative}
+
+/* ======== BRAND PAGE ======== */
+.brand-toggle-row{display:flex;border:1px solid var(--border);width:fit-content;margin-bottom:24px}
+.brand-toggle-row button{padding:8px 18px;border:none;background:var(--surface);font-size:13px;cursor:pointer;font-family:var(--font);color:var(--text2)}
+.brand-toggle-row button.active{background:var(--text);color:var(--bg);font-weight:600}
+.model-card{background:var(--surface);margin-bottom:8px;overflow:hidden}
+.model-card.open{border:2px solid var(--text)}
+.model-card-header{display:grid;grid-template-columns:200px 1fr auto;gap:20px;padding:20px;cursor:pointer;align-items:center}
+@media(max-width:860px){.model-card-header{grid-template-columns:1fr}}
+.model-card-img{width:100%;aspect-ratio:16/10;object-fit:cover;background:var(--surface2)}
+.model-card-info h4{font-size:17px;font-weight:800}
+.model-card-info .pos{font-size:11px;color:var(--text2);margin-top:2px}
+.model-card-body-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+.model-card.open .model-card-body-wrap{grid-template-rows:1fr}
+.model-card-body-inner{overflow:hidden}
+.model-card-body-inner>div{padding:0 20px 20px;border-top:1px solid var(--border)}
+.sp-grid{display:grid;grid-template-columns:1fr 1.2fr auto;gap:12px;padding-top:16px}
+@media(max-width:860px){.sp-grid{grid-template-columns:1fr}}
+.sp-cat h5{font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:4px;border-bottom:1px solid var(--border);grid-column:1/-1}
+.sp-item{margin-bottom:10px}
+.sp-item .name{font-weight:700;font-size:11px;margin-bottom:2px}
+.sp-item .detail{font-size:10px;color:var(--text2);line-height:1.6}
+.sp-item .ugc{font-size:10px;color:var(--text2);line-height:1.6;padding:6px 10px;background:var(--surface2);border-left:2px solid var(--border2)}
+
+/* ======== EVENTS, CARDS, TOOLS ======== */
+.card{background:var(--surface);padding:22px;margin-bottom:8px}
+.card:hover{box-shadow:2px 2px 0 var(--text)}
+.card h4{font-size:14px;font-weight:700;margin-bottom:10px}
+.timeline{position:relative}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:1px;background:var(--border2)}
+.timeline-step{position:relative;padding-left:28px;margin-bottom:14px}
+.timeline-step .dot{position:absolute;left:0;top:2px;width:20px;height:20px;border:2px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;background:var(--surface)}
+.timeline-step.done .dot{background:var(--text);color:var(--bg);border-color:var(--text)}
+.step-card{border:1px solid var(--border);background:var(--surface);margin-bottom:8px}
+.step-card:hover{border-color:var(--text)}
+.step-card-head{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.step-card-head h4{font-size:13px;font-weight:700}
+.step-card-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border);animation:in .2s ease}
+.step-card.open .step-card-body{display:block}
+.event-progress{display:flex;gap:4px;margin-bottom:18px;flex-wrap:wrap}
+.ep-step{flex:1;min-width:70px;padding:8px 6px;border:1px solid var(--border);text-align:center;cursor:pointer;font-size:9px;color:var(--text2);background:var(--surface)}
+.ep-step:hover{border-color:var(--text)}
+.ep-step.done{background:var(--text);color:var(--bg);border-color:var(--text)}
+.ep-step .ep-num{font-size:14px;font-weight:800;display:block}
+.tools-list{display:flex;flex-direction:column;gap:8px}
+.tool-row{display:grid;grid-template-columns:160px 1fr;gap:18px;padding:18px 22px;background:var(--surface);border:1px solid var(--border)}
+.tool-row:hover{border-color:var(--text)}
+@media(max-width:768px){.tool-row{grid-template-columns:1fr}}
+.subnav{display:flex;border:1px solid var(--border);width:fit-content;margin-bottom:20px}
+.subnav button{padding:6px 14px;border:none;background:var(--surface);font-size:11px;cursor:pointer;font-family:var(--font);color:var(--text2)}
+.subnav button.active{background:var(--text);color:var(--bg);font-weight:600}
+
+/* ======== BUTTONS & TAGS ======== */
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;font-size:11px;font-family:var(--font);cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);white-space:nowrap;transition:var(--t)}
+.btn:hover{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn-sm{padding:4px 9px;font-size:10px}
+.btn-xs{padding:2px 5px;font-size:9px}
+.btn-dark{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn-dark:hover{opacity:.85}
+.keyword-tag{display:inline-flex;padding:3px 10px;border:1px solid var(--border);font-size:10px;color:var(--text2);cursor:pointer}
+.keyword-tag:hover{color:var(--text);border-color:var(--text);background:var(--surface2)}
+.keyword-tag.p{color:var(--peugeot);border-color:#D0D8F0;background:#F5F7FC}
+.keyword-tag.c{color:var(--citroen);border-color:#F0D4CC;background:#FCF7F5}
+
+/* ======== ADVENTURE PANEL ======== */
+.adv-overlay{position:fixed;inset:0;z-index:250;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.adv-overlay.show{opacity:1;pointer-events:auto}
+.adv-panel{width:680px;max-width:94vw;max-height:85vh;background:var(--surface);overflow-y:auto;border:3px solid var(--text);animation:in .25s ease}
+.adv-head{background:var(--text);color:var(--bg);padding:28px 32px;display:flex;align-items:center;gap:20px}
+.adv-head .lvl-badge{width:56px;height:56px;border:3px solid var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;flex-shrink:0}
+.adv-head h3{font-size:22px;font-weight:900}
+.adv-head p{font-size:11px;color:#A0A0A0;margin-top:2px}
+.adv-xp-bar{margin:0 32px;padding:16px 0;border-bottom:1px solid var(--border)}
+.adv-xp-bar .xp-track{height:8px;background:var(--surface2);position:relative;margin-top:6px}
+.adv-xp-bar .xp-fill{height:100%;background:var(--text);transition:width .5s ease}
+.adv-section{padding:20px 32px;border-bottom:1px solid var(--border)}
+.adv-section h4{font-size:14px;font-weight:800;margin-bottom:12px}
+.prefix-grid{display:flex;flex-wrap:wrap;gap:6px}
+.prefix-option{padding:6px 14px;border:1px solid var(--border);font-size:11px;cursor:pointer;transition:var(--t)}
+.prefix-option:hover{border-color:var(--text)}
+.prefix-option.equipped{background:var(--text);color:var(--bg);border-color:var(--text);font-weight:700}
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.ach-item{text-align:center;padding:14px 8px;border:1px solid var(--border)}
+.ach-item.unlocked{background:var(--surface)}
+.ach-item.locked{opacity:.3;filter:grayscale(1)}
+.ach-item .ach-icon{font-size:22px;display:block;margin-bottom:4px}
+.ach-item .ach-name{font-size:9px;font-weight:600}
+.ach-item .ach-date{font-size:8px;color:var(--text3)}
+.activity-log{font-size:10px;color:var(--text2);line-height:2}
+.activity-log span{color:var(--text3);margin-right:8px}
+
+/* ======== AI, SETTINGS, EDITOR ======== */
+.ai-overlay{position:fixed;inset:0;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
+.ai-overlay.show{opacity:1;pointer-events:auto}
+.ai-bg{position:absolute;inset:0;background:rgba(0,0,0,.2)}
+.ai-panel{position:absolute;right:0;top:0;bottom:0;width:420px;max-width:92vw;background:var(--surface);display:flex;flex-direction:column;border-left:2px solid var(--text);animation:in .25s ease}
+.ai-panel-head{padding:18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ai-ctx{font-size:9px;color:var(--text3);padding:5px 18px;background:var(--surface2)}
+.ai-messages{flex:1;overflow-y:auto;padding:14px}
+.ai-msg{padding:10px 14px;margin-bottom:6px;font-size:11px;line-height:1.7;max-width:94%}
+.ai-msg.user{background:var(--surface2);margin-left:auto}
+.ai-msg.assistant{border:1px solid var(--border)}
+.ai-input-row{display:flex;gap:6px;padding:14px 18px;border-top:1px solid var(--border)}
+.ai-input-row textarea{flex:1;border:1px solid var(--border);padding:8px 10px;font-size:11px;font-family:var(--font);resize:none;outline:none;background:var(--surface2);min-height:38px;max-height:70px}
+.ai-input-row button{padding:0 14px;border:2px solid var(--text);background:var(--text);color:var(--bg);cursor:pointer;font-weight:700;font-size:11px}
+.ai-quick-actions{display:flex;gap:4px;padding:6px 18px;flex-wrap:wrap}
+.ai-quick-actions button{padding:3px 9px;border:1px solid var(--border);background:transparent;font-size:9px;color:var(--text2);cursor:pointer}
+.settings-overlay{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.settings-overlay.show{opacity:1;pointer-events:auto}
+.settings-bg{position:absolute;inset:0;background:rgba(0,0,0,.2)}
+.settings-box{position:relative;width:380px;background:var(--surface);padding:28px;border:2px solid var(--text);animation:in .25s ease}
+.ed-overlay{position:fixed;inset:0;z-index:180;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.ed-overlay.show{opacity:1;pointer-events:auto}
+.ed-panel{width:840px;max-width:95vw;max-height:85vh;background:var(--surface);display:flex;flex-direction:column;border:2px solid var(--text);overflow:hidden;animation:in .25s ease}
+.ed-toolbar{display:flex;align-items:center;gap:6px;padding:10px 16px;border-bottom:1px solid var(--border)}
+.ed-body{display:flex;flex:1;overflow:hidden}
+.ed-main{flex:1;padding:16px;overflow-y:auto}
+.ed-main textarea{width:100%;min-height:360px;border:none;font-size:14px;font-family:var(--font);line-height:1.8;resize:vertical;background:transparent;color:var(--text);outline:none}
+.ed-sidebar{width:170px;border-left:1px solid var(--border);padding:12px;overflow-y:auto;font-size:9px}
+.ed-stats{display:flex;gap:14px;font-size:9px;color:var(--text3);padding:10px 16px;border-top:1px solid var(--border)}
+
+/* ======== CALENDAR ======== */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.cal-cell{aspect-ratio:1;padding:3px;font-size:8px;background:var(--surface);cursor:pointer}
+.cal-cell:hover{background:var(--surface2)}
+.cal-cell .node{font-size:6px;padding:1px 3px;border-radius:2px;margin-top:1px;overflow:hidden;white-space:nowrap}
+.cal-cell .node.holiday{background:#FDE8E8;color:#B8381B}.cal-cell .node.marketing{background:#FEF0E0;color:#C46A20}.cal-cell .node.custom{background:var(--surface2)}
+.cal-cell.today{box-shadow:inset 0 0 0 1.5px var(--text)}
+.cal-popup{position:fixed;z-index:500;background:var(--surface);border:2px solid var(--text);padding:16px;width:220px;display:none;box-shadow:4px 4px 0 rgba(0,0,0,.1)}
+.cal-popup.show{display:block}
+.cal-popup input,.cal-popup select{width:100%;padding:5px 8px;border:1px solid var(--border);font-size:10px;margin-bottom:4px;outline:none}
+
+/* ======== MISC ======== */
+.toast-container{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:4px;pointer-events:none}
+.toast{padding:8px 16px;background:var(--text);color:var(--bg);font-size:10px;animation:tIn .2s ease}
+@keyframes tIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.todo-item{display:flex;align-items:center;gap:6px;padding:5px 0;font-size:11px;cursor:pointer}
+.todo-item.done{text-decoration:line-through;color:var(--text3)}
+.todo-item .todo-check{width:13px;height:13px;border:1px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:7px}
+.todo-item.done .todo-check{background:var(--text);color:var(--bg);border-color:var(--text)}
+.ai-loading{display:flex;align-items:center;gap:4px;padding:8px 0;font-size:10px;font-style:italic;color:var(--text2)}
+.ai-loading .dot{width:3px;height:3px;border-radius:50%;background:var(--text);animation:dotP .9s ease infinite}
+.ai-loading .dot:nth-child(2){animation-delay:.15s}.ai-loading .dot:nth-child(3){animation-delay:.3s}
+@keyframes dotP{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes xpGain{0%{transform:scale(1);color:var(--gold)}100%{transform:scale(1);color:inherit}}
+.empty-state{text-align:center;padding:24px 0;color:var(--text3);font-size:10px;font-style:italic}
+.fwd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.fwd-card{padding:18px;background:var(--surface);border:1px solid var(--border);cursor:pointer;font-size:11px;line-height:2;position:relative}
+.fwd-card:hover{border-color:var(--text)}
+.fwd-card .fcp{position:absolute;top:6px;right:6px;opacity:0}
+.fwd-card:hover .fcp{opacity:1}
+.word-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.word-col{background:var(--surface);padding:18px}
+.word-ch{font-size:14px;font-weight:800;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--text)}
+.type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:14px}
+.type-card{padding:14px;background:var(--surface);border:1px solid var(--border);cursor:pointer;text-align:center}
+.type-card.selected{border:2px solid var(--text)}
+</style>
+</head>
+<body>
+
+<!-- Splash -->
+<div class="splash" id="splash" onclick="dismissSplash()">
+  <div class="splash-inner"><div class="splash-line"></div><h1>LEXUN</h1><div class="sub">神龙工作台 · Dongfeng</div><div class="hint">↓ 点击进入 ↓</div></div>
+</div>
+
+<!-- APP -->
+<div class="app">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-brand"><h2>神龙工作台</h2><span>LEXUN</span></div>
+  <nav class="sidebar-nav">
+    <div class="sec-label">工作区</div>
+    <button class="active" data-tab="home"><span class="sb-icon">⌂</span> 首页</button>
+    <button data-tab="brand"><span class="sb-icon">◇</span> 品牌</button>
+    <button data-tab="event"><span class="sb-icon">◎</span> 活动</button>
+    <div class="sec-label">内容</div>
+    <button data-tab="plan"><span class="sb-icon">◉</span> 策划</button>
+    <button data-tab="copy"><span class="sb-icon">§</span> 推文</button>
+    <button data-tab="video"><span class="sb-icon">▷</span> 视频</button>
+    <div class="sec-label">其他</div>
+    <button data-tab="tools"><span class="sb-icon">＋</span> 工具箱</button>
+  </nav>
+  <div class="sidebar-bottom">
+    <button onclick="openAdventure()"><span class="sb-icon">⚔</span> 冒险 <span class="sb-lvl" id="sideLvl">1</span></button>
+    <button onclick="toggleAIPanel()"><span class="sb-icon">✦</span> AI 助理 <span class="sb-ai">⌘J</span></button>
+    <button onclick="toggleSettings()"><span class="sb-icon">⚙</span> 设置</button>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main" id="mainContent"></main>
+</div>
+
+<!-- AI Panel -->
+<div class="ai-overlay" id="aiOverlay">
+  <div class="ai-bg" onclick="toggleAIPanel()"></div>
+  <div class="ai-panel">
+    <div class="ai-panel-head"><span style="font-weight:800">AI 助理</span><button class="btn btn-sm" onclick="toggleAIPanel()">✕</button></div>
+    <div class="ai-ctx" id="aiContext">当前：全局助理</div>
+    <div class="ai-quick-actions" id="aiQuickActions"></div>
+    <div class="ai-messages" id="aiMessages"><div class="ai-msg assistant">你好，我是神龙工作台 AI 助理。帮你撰写推文、策划活动、润色文案。请描述需要什么帮助。</div></div>
+    <div class="ai-input-row"><textarea id="aiInput" placeholder="描述你需要什么帮助…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAIMessage()}"></textarea><button onclick="sendAIMessage()" id="aiSendBtn">发送</button></div>
+  </div>
+</div>
+
+<!-- Settings -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-bg" onclick="toggleSettings()"></div>
+  <div class="settings-box">
+    <h3 style="font-weight:800;margin-bottom:16px">设置</h3>
+    <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px">DeepSeek API Key</label>
+    <input type="password" id="settingsApiKey" placeholder="sk-..." style="width:100%;padding:7px 10px;border:1px solid var(--border);font-size:11px;margin-bottom:10px;outline:none">
+    <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px">模型</label>
+    <select id="settingsModel" style="width:100%;padding:7px 10px;border:1px solid var(--border);font-size:11px;margin-bottom:14px">
+      <option value="deepseek-chat">DeepSeek Chat</option><option value="deepseek-reasoner">DeepSeek Reasoner</option>
+    </select>
+    <div style="display:flex;gap:6px"><button class="btn btn-dark btn-sm" onclick="saveSettings()">保存</button><button class="btn btn-sm" onclick="toggleSettings()">取消</button></div>
+  </div>
+</div>
+
+<!-- Editor -->
+<div class="ed-overlay" id="editorOverlay">
+  <div class="ed-panel">
+    <div class="ed-toolbar"><span id="editorTitle" style="font-weight:800;font-size:12px">编辑器</span><span style="flex:1"></span><button class="btn btn-sm" onclick="insertFromRef()">卖点</button><button class="btn btn-sm btn-dark" onclick="aiAssistEditor()">AI</button><button class="btn btn-sm" onclick="saveDraft()">保存</button><button class="btn btn-sm btn-dark" onclick="copyEditorContent();exportDoc()">导出Word</button></div>
+    <div class="ed-body"><div class="ed-main"><textarea id="editorTextarea" placeholder="在此编辑…&#10;&#10;输入 /车型名 可快速查找卖点，如 /408"></textarea></div><div class="ed-sidebar" id="editorSidebar"><h4 style="font-size:8px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">卖点</h4><div id="editorSPs"></div><h4 style="margin-top:10px;font-size:8px;color:var(--text3);letter-spacing:.1em">关键词</h4><div id="editorKeywords"></div></div></div>
+    <div class="ed-stats"><span>字数 <b id="editorCharCount">0</b></span><span id="editorAIWarning" style="color:var(--citroen);display:none;margin-left:auto">⚠ AI词</span></div>
+  </div>
+</div>
+
+<!-- Adventure Panel -->
+<div class="adv-overlay" id="advOverlay">
+  <div class="adv-panel" id="advContent"></div>
+</div>
+
+<!-- Toast --><div class="toast-container" id="toastContainer"></div>
+<!-- Calendar popup --><div class="cal-popup" id="calPopup"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const BRANDS={peugeot:{id:'peugeot',name:'东风标致',animal:'狮',fans:'狮友',slogan:'感·为心动',tone:'动感、锋锐、驾控、法式美学',keywords:['狮魂美学','燃擎','锋芒','共驭','狮友','驾控','法式底盘','新法式'],desc:'以赛道基因注入日常驾趣，每一程都是与机械的对话。',hashtags:['#东风标致','#狮魂美学','#与标致的燃擎时光'],models:[{model:'408',pos:'新法式臻品家轿',price:'10万级',desc:'十万级家轿的越级之选，狮魂美学设计，兼顾驾控与实用。',cats:[{cat:'设计美学',items:[{name:'狮魂美学动感设计',official:'狮眼大灯搭配错落格栅，前脸激进有辨识度。',ugc:'"路过标致4S店时被新408激进的前脸一眼击中"'},{name:'i-Cockpit唯我座舱',official:'以驾驶者为中心的座舱布局，营造沉浸式驾驶体验。',ugc:'"试驾时那份安静安逸的稳定感，正是我想要的高级感"'}]},{cat:'安全品质',items:[{name:'1600MPa超高强钢',official:'关键部位采用超高强度热成型钢。',ugc:'"靠着高强度车身带来的扎实防护逢凶化吉"'},{name:'2730mm越级轴距',official:'超长轴距带来宽敞后排空间。',ugc:'"十年里载过父母朋友，从没有人抱怨过拥挤"'}]},{cat:'操控体验',items:[{name:'法式底盘调校',official:'传承标致百年底盘调校基因。',ugc:'"弯道不少，但这台车操控让我特别踏实"'}]}]},{model:'408X',pos:'新法式无界座驾',price:'15-20万级',desc:'融合轿车优雅、SUV通过性、旅行车实用性。',cats:[{cat:'设计美学',items:[{name:'狮魂美学跨界设计',official:'融合轿车优雅、SUV通过性、旅行车实用性。',ugc:'"一排408X穿梭在乡野公路上，自成春日里最亮眼的风景线"'}]},{cat:'操控体验',items:[{name:'1.6T+8AT',official:'1.6T涡轮增压+爱信8AT，175匹马力。',ugc:'"运动模式一开声浪上来"'}]}]},{model:'508L',pos:'新法式驾控旗舰',price:'16-22万级',desc:'211匹马力+CLDR大师级底盘，弯道艺术家。',cats:[{cat:'操控体验',items:[{name:'CLDR大师级底盘',official:'东风标致专属CLDR大师级底盘。',ugc:'"120km/h巡航稳如贴地飞行"'},{name:'1.8T+爱信8AT',official:'全系标配1.8T+8AT，211匹马力。',ugc:'"跑高速像贴地飞行，再加速后劲十足"'}]}]},{model:'4008',pos:'新法式臻品SUV',price:'15-20万级',desc:'PHC自适应悬架带来越级驾乘品质。',cats:[{cat:'舒适健康',items:[{name:'PHC自适应液压悬架',official:'颠簸路段高效滤震。',ugc:'"老人孩子乘车毫无不适感"'}]}]},{model:'5008',pos:'新法式旗舰SUV',price:'18-25万级',desc:'5+2灵动大空间，全家出行的法式旗舰。',cats:[{cat:'空间实用',items:[{name:'7座灵活布局',official:'5+2灵动座椅布局。',ugc:'"轻松收纳行李相机与应援物"'}]}]}]},citroen:{id:'citroen',name:'东风雪铁龙',animal:'龙',fans:'龙友',slogan:'因你不同',tone:'舒适、从容、法式生活',keywords:['龙耀','自在','舒享','从容','龙友','热爱','法式舒适'],desc:'舒适不是妥协，是一种选择。',hashtags:['#东风雪铁龙','#龙耀时刻','#凡心所向自在驰骋'],models:[{model:'凡尔赛 C5 X',pos:'新势座驾',price:'14-19万级',desc:'一车三用：轿车优雅、旅行车实用、SUV通过性。',cats:[{cat:'设计美学',items:[{name:'跨界溜背造型',official:'融合轿车优雅、旅行车实用、SUV通过性。',ugc:'"跨界造型狠狠戳中，流畅溜背线条"'}]},{cat:'舒适健康',items:[{name:'PHC自适应液压悬架',official:'被誉为"魔毯"，烂路不颠高速稳。',ugc:'"PHC悬架配置实用靠谱"'},{name:'Claudia舒适座椅',official:'Claudia高级真皮座椅。',ugc:'"开着它去露营的松弛感正是法式生活"'}]}]},{model:'天逸 C5 Aircross',pos:'专业级舒适SUV',price:'15-20万级',desc:'全系标配PHC，十七年法系品质传承。',cats:[{cat:'舒适健康',items:[{name:'PHC自适应液压技术',official:'全系标配PHC。',ugc:'"法系底盘调校好，高速驾驶灵活又舒服"'}]}]}]}};
+const EVENT_STEPS=[{id:'theme',num:1,title:'活动主题策划',desc:'确定主题、时间、创意方向',tmpl:'【活动主题策划】\n\n活动名称：[致友/龙友]共创活动 · 第[X]期\n活动主题：[主题名]\n活动时间：[日期]\n\n核心创意：\n1. 活动调性：\n2. 情感主线：\n3. 差异化亮点：',refs:[{n:'品牌挚友招募策划方案',f:'策划方案/【0416】神龙品牌挚友招募策划方案.docx'}]},{id:'recruit',num:2,title:'活动招募推文',desc:'撰写发布活动招募推文',tmpl:'【招募推文】\n\n标题：[共创计划名称]\n副标题：与[品牌名]一起\n\n开篇品牌宣言\n我们寻觅，你的身影：\n□ [特质一] □ [特质二]\n\n如何加入：添加品牌企业微信 → 填写报名',refs:[]},{id:'list',num:3,title:'邀请车主名单',desc:'筛选确定受邀车主',tmpl:'【车主邀请名单】\n\n车主姓名 | 车型 | 城市 | 标签 | 确认状态\n[姓名] | [车型] | [城市] | [标签] | □',refs:[]},{id:'script',num:4,title:'主持台本',desc:'全流程主持台本',tmpl:'【全流程主持台本】\n\n环节一：签到暖场 — [时长]\n环节二：开场致辞 — [时长]\n环节三：品牌分享 — [时长]\n环节四：共创讨论 — [时长]\n环节五：车主分享 — [时长]\n环节六：合影留念 — [时长]',refs:[{n:'标致共创活动全流程主持台本V4',f:'518共创活动/台本/标致共创活动全流程主持台本V4.docx'}]},{id:'speech',num:5,title:'领导发言稿',desc:'品牌领导发言稿',tmpl:'【领导发言稿】\n\n一、开场问候（1min）\n二、品牌理念分享（2-3min）\n三、致友寄语（1-2min）\n四、收尾祝福（30s）',refs:[{n:'吕总发言稿',f:'518共创活动/发言稿/致友共创活动-吕总发言稿.docx'}]},{id:'interview',num:6,title:'采访提纲',desc:'车主与领导采访问题',tmpl:'【采访提纲】\n\n采访对象：[姓名] 身份：[车主/领导]\n问题设计：1.[开场] 2.[品牌] 3.[产品] 4.[共创] 5.[寄语]',refs:[]},{id:'video',num:7,title:'活动视频',desc:'先导片脚本、分镜头',tmpl:'【视频脚本】\n\n视频名称：[名称] 时长：[X]秒\n镜号 | 景别 | 画面 | VO | 时长\n1 | 远景 | [画面] | [文案] | 3s',refs:[{n:'先导片详细脚本',f:'518共创活动/视频/先导片详细脚本.pdf'}]},{id:'review',num:8,title:'回顾推文',desc:'活动回顾推文撰写',tmpl:'【回顾推文】\n\n标题：以[关键词]赴约，携热爱同行\n\n开场 → 核心亮点回顾 → 品牌方回应 → 收尾升华 + CTA',refs:[]}];
+const COPY_TYPES=[{id:'ugc',n:'UGC合集帖',i:'§',d:'主题包装+4~6车主故事'},{id:'ranking',n:'榜单公示帖',i:'¶',d:'周榜/月榜标准化模板'},{id:'campaign',n:'活动征集帖',i:'※',d:'情感引入+3-4方向+规则'},{id:'recruit',n:'招募帖',i:'†',d:'品牌宣言式长图'},{id:'story',n:'车友故事',i:'‖',d:'单人物深度故事'},{id:'review',n:'活动回顾',i:'‡',d:'高光集锦/复盘报告'},{id:'autoshow',n:'车展推文',i:'◊',d:'车展变体'},{id:'promo',n:'品牌庆/拉新',i:'★',d:'促销型推文'},{id:'seasonal',n:'节点主题UGC',i:'❋',d:'节气/季节包装'}];
+const ASSEMBLY={opening:[{id:'o1',t:'[品牌名]相伴，共赴每一程热爱'},{id:'o2',t:'驾驶的美学，不止于机械'},{id:'o3',t:'舒适不是妥协，是一种选择'},{id:'o4',t:'[活动名]正式开启招募'}],body:[{id:'b1',t:'带话题 [话题名] 发布原创内容'},{id:'b2',t:'车主故事：[用户名] — [车型]车主\n[场景触发 → 产品体验 → 情感收尾]'},{id:'b3',t:'活动时间：[日期] — [日期]\n文字≥100字，图片≥3张'},{id:'b4',t:'凭借[卖点1]，[卖点2]'}],closing:[{id:'c1',t:'以[热爱/自在/锋芒]，致远方'},{id:'c2',t:'扫码加入[共创计划名称]'},{id:'c3',t:'活动火热进行中，点击下方即刻参与'}]};
+const BRAND_SWAP={'狮魂':'龙耀','狮友':'龙友','标致':'雪铁龙','燃擎':'龙耀','锋芒':'自在','东风标致':'东风雪铁龙','致友':'龙友','狮魂美学':'法式舒适','驾控':'舒适','CLDR':'MCS','弯道艺术家':'魔毯体验','龙耀':'狮魂','龙友':'狮友','雪铁龙':'标致','自在':'锋芒','东风雪铁龙':'东风标致','法式舒适':'狮魂美学','舒适':'驾控','MCS':'CLDR','魔毯体验':'弯道艺术家'};
+const DEFAULT_CAL_NODES={'2026-1-1':{t:'元旦',c:'holiday'},'2026-1-29':{t:'春节',c:'holiday'},'2026-4-5':{t:'清明',c:'holiday'},'2026-5-1':{t:'劳动节',c:'holiday'},'2026-5-31':{t:'端午',c:'holiday'},'2026-6-18':{t:'618大促',c:'marketing'},'2026-9-25':{t:'中秋',c:'holiday'},'2026-10-1':{t:'国庆',c:'holiday'},'2026-11-11':{t:'双11',c:'marketing'},'2026-12-12':{t:'双12',c:'marketing'}};
+
+// ============================================================
+// STATE
+// ============================================================
+let currentTab='home',brandTab='peugeot',selectedCopyType='ugc',fwdBrand='peugeot',fwdResults=[],selectedFwd=0,assemblySlots={opening:null,body:[],closing:null},carIndex=0,eventChecklist=JSON.parse(localStorage.getItem('sl_ec')||'{}'),eventDate=localStorage.getItem('sl_ed')||'',todos=JSON.parse(localStorage.getItem('sl_todos')||'[]'),drafts=JSON.parse(localStorage.getItem('sl_drafts')||'[]'),favs=JSON.parse(localStorage.getItem('sl_fav')||'[]'),aiMessages=[{role:'assistant',text:'你好，我是神龙工作台 AI 助理。帮你撰写推文、策划活动、润色文案。请描述需要什么帮助。'}],aiContext='全局助理',aiLoading=false,calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),calNodes=JSON.parse(localStorage.getItem('sl_calnodes')||'{}'),templates=JSON.parse(localStorage.getItem('sl_templates')||'{}');
+
+// XP & ADVENTURE
+const XP_LOG=JSON.parse(localStorage.getItem('sl_xplog')||'[]');
+const ACHIEVEMENTS=JSON.parse(localStorage.getItem('sl_ach')||'{}');
+let equippedPrefix=localStorage.getItem('sl_prefix')||'';
+
+// Level formula: level N requires sum_{i=1}^{N-1}(300 + i*150) XP
+function xpForLevel(lvl){var x=0;for(var i=1;i<lvl;i++)x+=300+i*150;return x}
+function currentLevel(){var xp=getTotalXP();var lvl=1;while(xp>=xpForLevel(lvl+1))lvl++;return lvl}
+function getTotalXP(){return XP_LOG.reduce(function(s,e){return s+e.xp},0)}
+function currentXP(){return getTotalXP()-xpForLevel(currentLevel())}
+function xpToNext(){return xpForLevel(currentLevel()+1)-xpForLevel(currentLevel())}
+function addXP(amount,reason){XP_LOG.push({xp:amount,reason:reason,time:new Date().toLocaleString()});if(XP_LOG.length>200)XP_LOG.splice(0,XP_LOG.length-200);S('xplog',XP_LOG);checkAchievements();updateSideLvl();toast('+'+amount+' XP · '+reason)}
+function checkAchievements(){
+  var xp=getTotalXP(),lvl=currentLevel();
+  var checks={first_copy:function(){return XP_LOG.some(function(e){return e.reason==='完成推文组装'})},ten_copies:function(){return XP_LOG.filter(function(e){return e.reason==='完成推文组装'}).length>=10},ai_veteran:function(){return XP_LOG.filter(function(e){return e.reason.indexOf('AI')>-1}).length>=30},all_modules:function(){var mods=new Set(XP_LOG.map(function(e){return e.reason.split('·')[0]}));return mods.size>=7},streak7:function(){return XP_LOG.some(function(e){return e.reason==='连续7天登录'})},first_swap:function(){return XP_LOG.some(function(e){return e.reason==='使用品牌换装'})},speed_demon:function(){return XP_LOG.filter(function(e){return e.time&&e.time.includes(new Date().toLocaleDateString())&&e.reason==='完成推文组装'}).length>=3},night_owl:function(){return new Date().getHours()>=22},perfect_day:function(){return todos.length>0&&todos.every(function(t){return t.done})}};
+  var defs={first_copy:{n:'第一篇推文',i:'✍️',p:'初出茅庐'},ten_copies:{n:'十篇达成',i:'📝',p:'量产写手'},ai_veteran:{n:'AI老搭档',i:'🤖',p:'AI老搭档'},all_modules:{n:'全能王',i:'👑',p:'全能战士'},streak7:{n:'劳模',i:'🔥',p:'永恒劳模'},first_swap:{n:'品牌换装',i:'🔄',p:'双面特工'},speed_demon:{n:'闪电侠',i:'⚡',p:'闪电写手'},night_owl:{n:'夜猫子',i:'🦉',p:'暗夜传说'},perfect_day:{n:'完美主义',i:'💎',p:'完美主义者'}};
+  Object.keys(checks).forEach(function(k){if(checks[k]()&&!ACHIEVEMENTS[k]){ACHIEVEMENTS[k]=new Date().toLocaleDateString();toast('🏆 成就解锁：'+defs[k].n)}});
+  S('ach',ACHIEVEMENTS);
+}
+
+// PREFIX SYSTEM
+const PREFIXES=[{id:'',n:'无前缀'},{id:'legend',n:'传说强者',ach:'all_modules'},{id:'scribe',n:'爆款制造机',ach:'ten_copies'},{id:'ai_partner',n:'AI老搭档',ach:'ai_veteran'},{id:'grinder',n:'永恒劳模',ach:'streak7'},{id:'speed',n:'闪电写手',ach:'speed_demon'}];
+function getPrefixName(pid){var p=PREFIXES.find(function(x){return x.id===pid});return p?p.n:''}
+
+function updateSideLvl(){var el=document.getElementById('sideLvl');if(el)el.textContent=currentLevel()}
+
+// ============================================================
+// UTILS
+// ============================================================
+function S(k,v){localStorage.setItem('sl_'+k,JSON.stringify(v))}
+function toast(m){var c=document.getElementById('toastContainer'),t=document.createElement('div');t.className='toast';t.textContent=m;c.appendChild(t);setTimeout(function(){t.style.opacity='0';t.style.transform='translateY(4px)';setTimeout(function(){t.remove()},200)},1600)}
+function copy(t){navigator.clipboard.writeText(t).then(function(){toast('已复制')})}
+function D(id){var el=document.getElementById(id);return el?el.value||el.textContent||'':''}
+function getModelImg(brand,model){var m={peugeot:{'408':'peugeot_408.png','408X':'peugeot_408x.png','508L':'peugeot_508l.png','4008':'peugeot_4008.png','5008':'peugeot_5008.png'},citroen:{'凡尔赛 C5 X':'citroen_c5x.png','天逸 C5 Aircross':'citroen_tianyi.png'}};return'神龙工作台_img/'+((m[brand]||{})[model]||'')}
+function isFav(type,id){return favs.some(function(f){return f.type===type&&f.id===id})}
+function toggleFav(item){var i=favs.findIndex(function(f){return f.type===item.type&&f.id===item.id});if(i>-1){favs.splice(i,1);toast('已取消收藏')}else{favs.push(item);toast('已收藏')}S('fav',favs)}
+
+// SPLASH
+function dismissSplash(){document.getElementById('splash').classList.add('hide');setTimeout(function(){var s=document.getElementById('splash');if(s)s.remove()},500)}
+setTimeout(function(){dismissSplash()},3500);
+
+// KEYBOARD
+document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.isContentEditable)return;var meta=e.metaKey||e.ctrlKey;if(meta&&e.key>='1'&&e.key<='8'){e.preventDefault();var tabs=['home','brand','event','plan','copy','video','tools','adventure'];switchTab(tabs[parseInt(e.key)-1])}if(meta&&e.key==='j'){e.preventDefault();toggleAIPanel()}if(e.key==='Escape'){closeEditor();closeAdv();document.querySelectorAll('.ai-overlay.show,.settings-overlay.show').forEach(function(p){p.classList.remove('show')});closeCalPopup()}});
+
+// TABS
+function switchTab(tab){currentTab=tab;document.querySelectorAll('.sidebar-nav button').forEach(function(b){b.classList.toggle('active',b.dataset.tab===tab)});render();updateAIContext();renderAIQuickActions()}
+document.querySelector('.sidebar-nav').addEventListener('click',function(e){var btn=e.target.closest('button');if(btn&&btn.dataset.tab)switchTab(btn.dataset.tab)});
+
+// RENDER
+function render(){var m=document.getElementById('mainContent'),h='';
+  if(currentTab==='home')h=renderHome();else if(currentTab==='brand')h=renderBrand();else if(currentTab==='event')h=renderEvent();else if(currentTab==='plan')h=renderPlan();else if(currentTab==='copy')h=renderCopy();else if(currentTab==='video')h=renderVideo();else if(currentTab==='tools')h=renderTools();
+  m.innerHTML=h;
+  if(currentTab==='home'){renderTodos();renderDrafts()}
+  if(currentTab==='brand')initBrandToggle();
+  if(currentTab==='plan')initPlanSubnav();
+  if(currentTab==='copy'){initCopySubnav();setTimeout(function(){renderFwdQuick();renderTypeGrid()},50)}
+  if(currentTab==='video')initVideoSubnav();
+}
+
+function getAllModels(){var all=[];['peugeot','citroen'].forEach(function(bid){BRANDS[bid].models.forEach(function(m){all.push({brand:bid,name:BRANDS[bid].name,model:m.model,pos:m.pos,desc:m.desc,img:getModelImg(bid,m.model)})})});return all}
+function nextCar(){var all=getAllModels();carIndex=(carIndex+1)%all.length;render()}
+function prevCar(){var all=getAllModels();carIndex=(carIndex-1+all.length)%all.length;render()}
+
+function updateAIContext(){var ctx={home:'首页',brand:'品牌资产',event:'活动策划',plan:'策划中台',copy:'推文工具箱',video:'视频工坊',tools:'工具箱'};aiContext=ctx[currentTab]||'全局';var el=document.getElementById('aiContext');if(el)el.textContent='当前：'+aiContext}
+function renderAIQuickActions(){var el=document.getElementById('aiQuickActions');if(!el)return;var actions={home:[['帮我看看今天需要处理什么','今日待办']],brand:[['帮我基于当前车型卖点写一篇推文','写车型推文']],event:[['帮我检查活动流程是否有遗漏','流程检查']],plan:[['帮我梳理下季度内容排期','排期建议']],copy:[['帮我生成3条朋友圈转发语','转发语'],['帮我润色推文','润色']],video:[['帮我写一个30秒先导片脚本','先导片']],tools:[['帮我检查文案是否有AI腔','检查文案']]};var acts=actions[currentTab]||[['帮我写一篇推文','写推文'],['帮我润色文字','润色']];el.innerHTML=acts.map(function(a){return'<button onclick="aiQuick(\''+a[0]+'\')">'+a[1]+'</button>'}).join('')}
+
+// ============================================================
+// HOME — Creative layout
+// ============================================================
+function renderHome(){var n=new Date(),hr=n.getHours(),greet=hr<12?'早上好':hr<18?'下午好':'晚上好',pe=Object.values(eventChecklist).filter(function(v){return v}).length,lvl=currentLevel(),pfx=getPrefixName(equippedPrefix),xp=currentXP(),xpn=xpToNext(),pct=Math.round(xp/xpn*100);
+return'<div class="hero-section"><div class="hero-watermark">'+(n.getMonth()+1)+'.'+('0'+n.getDate()).slice(-2)+'</div><div class="hero-greeting"><h3>'+(pfx?'<span style="display:inline-block;background:var(--text);color:var(--bg);padding:3px 12px;font-size:14px;letter-spacing:.05em;font-weight:700;margin-right:8px;vertical-align:middle;font-family:var(--font)">'+pfx+'</span>':'')+'<span>'+greet+'，LEXUN</span></h3><p>本月 2 场活动 · '+pe+' 项已完成 · '+drafts.length+' 份草稿 · <span style="cursor:pointer;border-bottom:1px dashed var(--text);font-weight:600" onclick="toggleAIPanel()" title="AI 助理">✦ AI 助理已就绪</span></p></div><div class="hero-prefix">⚡ Lv.'+lvl+'</div></div>'+
+'<div class="stat-cluster"><div class="stat-big"><div class="val">2</div><div class="lbl">本月活动</div></div><div class="stat-sm"><div class="val">'+drafts.length+'</div><div class="lbl">草稿</div></div><div class="stat-tiny">距下个<br>活动<br><b>'+(eventDate?Math.ceil((new Date(eventDate)-n)/86400000)+'天':'—')+'</b></div><div class="stat-sm" style="transform:rotate(1deg)"><div class="val">'+pe+'/8</div><div class="lbl">活动进度</div></div></div>'+
+'<div class="asym-row"><div class="asym-wide"><div class="card-lg" onclick="switchTab(\x27copy\x27)" style="cursor:pointer"><div class="c-label">快速入口 · 点击进入</div><h4>今天写点什么？</h4><p>智能组装推文 · 生成转发语 · 查看车型卖点 · 策划活动方案 · <span style="background:var(--text);color:var(--bg);padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700">✦ AI 辅助</span></p><div class="corner">常用</div></div></div><div class="asym-narrow"><div class="card-md" onclick="switchTab(\'brand\')"><h4>查车型卖点 →</h4><p style="font-size:10px;color:var(--text3)">7 款车型完整知识库</p></div><div class="card-offset" onclick="openEditor(\'空白编辑器\')"><h4>打开编辑器 →</h4><p style="font-size:10px;color:var(--text3)">卖点侧边栏辅助</p></div></div></div>'+
+(function(){var all=getAllModels();carIndex=carIndex%all.length;var c=all[carIndex];return'<div class="bleed-row" id="carCarousel"><button class="bleed-nav bleed-prev" onclick="prevCar()">◂</button><div class="bleed-img"><img src="'+c.img+'" alt="'+c.model+'" onerror="this.style.display=\x27none\x27" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div class="placeholder">'+c.model+'</div></div><div class="bleed-text"><h4>'+c.name+' '+c.model+'</h4><p>'+c.pos+'<br>'+c.desc+'</p><div style="margin-top:12px"><button class="btn btn-sm" style="border-color:var(--bg);color:var(--bg)" onclick="switchTab(\x27brand\x27)">查看品牌页</button></div></div><button class="bleed-nav bleed-next" onclick="nextCar()">▸</button><div class="bleed-dots">'+all.map(function(m,i){return'<span class="'+(i===carIndex?'active':'')+'" onclick="carIndex='+i+';render()"></span>'}).join('')+'</div></div>'})()+
+'<div class="tag-cloud">'+BRANDS.peugeot.keywords.slice(0,4).map(function(k,i){var cls=i%2===0?'t-bold':i===1?'t-light':'t-dark';return'<span class="'+cls+'" onclick="copy(\''+k+'\')">'+k+'</span>'}).join('')+BRANDS.citroen.keywords.slice(0,4).map(function(k,i){var cls=i%2===0?'t-up':'t-light';return'<span class="'+cls+'" onclick="copy(\''+k+'\')">'+k+'</span>'}).join('')+'</div>'+
+'<div class="dark-break"><div><h3>冒险进度</h3><p>'+(pfx?'⚜ '+pfx+' · ':'')+'Lv.'+lvl+' · '+xp+' / '+xpn+' XP · 距下一级还需 '+(xpn-xp)+' XP</p></div><div style="display:flex;gap:16px;font-size:12px"><div style="text-align:center;font-size:24px">'+Object.keys(ACHIEVEMENTS).length+'</div><div style="font-size:10px;color:#A0A0A0;margin-top:8px">成就</div></div></div>'+
+'<div style="display:grid;grid-template-columns:1fr 1fr 260px;gap:8px;margin-top:24px">'+
+'<div class="card"><h4>待办</h4><div id="todoList"></div><input id="newTodo" placeholder="+ 添加待办…" style="width:100%;padding:6px 0;border:none;font-size:11px;font-family:var(--font);background:transparent;outline:none;border-bottom:1px solid var(--border)" onkeypress="if(event.key===\'Enter\')addTodo()"></div>'+
+'<div class="card"><h4>草稿箱</h4><div id="draftList"></div></div>'+
+'<div class="card"><h4>营销日历</h4>'+renderCalHTML()+'</div></div>'}
+function addTodo(){var inp=document.getElementById('newTodo');if(!inp||!inp.value.trim())return;todos.push({t:inp.value.trim(),done:false});inp.value='';S('todos',todos);renderTodos()}
+function toggleTodo(i){todos[i].done=!todos[i].done;S('todos',todos);renderTodos();addXP(5,'待办完成')}
+function delTodo(i){todos.splice(i,1);S('todos',todos);renderTodos()}
+function renderTodos(){var el=document.getElementById('todoList');if(!el)return;if(!todos.length){el.innerHTML='<div class="empty-state">暂无待办</div>';return}el.innerHTML=todos.map(function(t,i){return'<div class="todo-item'+(t.done?' done':'')+'" onclick="toggleTodo('+i+')"><div class="todo-check">✓</div>'+t.t+'</div>'}).join('')}
+function renderDrafts(){var el=document.getElementById('draftList');if(!el)return;if(!drafts.length){el.innerHTML='<div class="empty-state">暂无草稿</div>';return}el.innerHTML=drafts.map(function(d,i){return'<div class="todo-item" onclick="openDraft('+i+')"><span>'+d.title+'</span><span style="font-size:9px;color:var(--text3);margin-left:auto">'+d.time+'</span></div>'}).join('')}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+function renderCalHTML(){if(Object.keys(calNodes).length===0){calNodes=JSON.parse(JSON.stringify(DEFAULT_CAL_NODES));S('calnodes',calNodes)}var y=calYear,m=calMonth,fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),today=new Date(),mn=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],h='';
+h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:11px"><span onclick="calMonth--;if(calMonth<0){calMonth=11;calYear--}render()" style="cursor:pointer">◂</span><b>'+y+' '+mn[m]+'</b><span onclick="calMonth++;if(calMonth>11){calMonth=0;calYear++}render()" style="cursor:pointer">▸</span></div>';
+h+='<div class="cal-grid"><div class="cal-cell header" style="background:var(--surface2);cursor:default">一</div><div class="cal-cell header" style="background:var(--surface2);cursor:default">二</div><div class="cal-cell header" style="background:var(--surface2);cursor:default">三</div><div class="cal-cell header" style="background:var(--surface2);cursor:default">四</div><div class="cal-cell header" style="background:var(--surface2);cursor:default">五</div><div class="cal-cell header" style="background:var(--surface2);cursor:default">六</div><div class="cal-cell header" style="background:var(--surface2);cursor:default">日</div>';
+var startDow=fd===0?6:fd-1;for(var i=0;i<startDow;i++)h+='<div class="cal-cell"></div>';
+for(var d=1;d<=dim;d++){var cls='cal-cell',dk=y+'-'+(m+1)+'-'+d;if(today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d)cls+=' today';var node=calNodes[dk];h+='<div class="'+cls+'" onclick="openCalNode(\''+dk+'\',event)"><b>'+d+'</b>'+(node?'<div class="node '+node.c+'">'+node.t+'</div>':'')+'</div>'}
+h+='</div><span style="font-size:9px;color:var(--text3);cursor:pointer;display:inline-block;margin-top:4px" onclick="openCalNode(\'new\',event)">+ 添加节点</span>';return h}
+function openCalNode(dk,e){var p=document.getElementById('calPopup'),r=e.target.getBoundingClientRect();p.style.top=Math.min(r.bottom+4,window.innerHeight-200)+'px';p.style.left=Math.min(r.left,window.innerWidth-240)+'px';var n=calNodes[dk];p.innerHTML='<input id="calNd" type="date" value="'+(dk==='new'?calYear+'-'+(calMonth+1)+'-1':dk)+'"><input id="calNt" placeholder="节点名称" value="'+(n?n.t:'')+'"><select id="calNc"><option value="holiday"'+(n&&n.c==='holiday'?' selected':'')+'>节日</option><option value="marketing"'+(n&&n.c==='marketing'?' selected':'')+'>营销</option><option value="custom"'+(n&&n.c==='custom'?' selected':'')+'>自定义</option></select><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn btn-dark btn-xs" onclick="saveCal(\''+dk+'\')">保存</button>'+(n?'<button class="btn btn-xs" onclick="deleteCal(\''+dk+'\')">删除</button>':'')+'<button class="btn btn-xs" onclick="closeCalPopup()">取消</button></div>';p.classList.add('show')}
+function saveCal(old){var d=document.getElementById('calNd').value,t=document.getElementById('calNt').value.trim(),c=document.getElementById('calNc').value;if(!t)return;if(old!=='new'&&old!==d)delete calNodes[old];calNodes[d]={t:t,c:c};S('calnodes',calNodes);closeCalPopup();render()}
+function deleteCal(k){delete calNodes[k];S('calnodes',calNodes);closeCalPopup();render()}
+function closeCalPopup(){document.getElementById('calPopup').classList.remove('show')}
+
+// ============================================================
+// BRAND
+// ============================================================
+function initBrandToggle(){var el=document.getElementById('brandToggle');if(el)el.onclick=function(e){if(e.target.tagName==='BUTTON'){brandTab=e.target.dataset.brand;render()}}}
+function renderBrand(){var b=BRANDS[brandTab],hero='<div class="bleed-row" style="margin-bottom:24px"><div class="bleed-text"><h4>'+b.name+'</h4><p>'+b.slogan+' · '+b.tone+'<br>'+b.desc+'</p></div><div class="bleed-img" style="background:var(--surface2)"><div class="placeholder">'+b.animal+'</div></div></div>';
+var modelTabs='<div style="display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:8px" id="modelTabs">'+b.models.map(function(m,i){return'<div style="flex-shrink:0;padding:8px 16px;background:var(--surface);border:1px solid var(--border);cursor:pointer;font-size:11px;font-weight:600;white-space:nowrap;transition:var(--t)" onclick="document.getElementById(\'mr-'+m.model+'\').scrollIntoView({behavior:\'smooth\',block:\'start\'});setTimeout(function(){document.getElementById(\'mr-'+m.model+'\').classList.add(\'open\')},300)" onmouseover="this.style.borderColor=\'var(--text)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+m.model+'</div>'}).join('')+'</div>';
+var models=modelTabs+b.models.map(function(m){return'<div class="model-card" id="mr-'+m.model+'"><div class="model-card-header" onclick="toggleModelRow(\''+m.model+'\')"><img class="model-card-img" src="'+getModelImg(brandTab,m.model)+'" alt="'+m.model+'" onerror="this.style.display=\'none\'" loading="lazy"><div class="model-card-info"><h4>'+m.model+'</h4><div class="pos">'+m.pos+' · '+m.price+'</div></div><div class="model-card-actions" style="display:flex;gap:4px"><button class="btn btn-sm" onclick="event.stopPropagation();openEditor(\''+m.model+' 推文\',\''+brandTab+'\',\''+m.model+'\')">编辑</button><button class="btn btn-sm" onclick="event.stopPropagation();toggleFav({type:\'model\',id:\''+brandTab+':'+m.model+'\',label:\''+m.model+' '+m.pos+'\'})">'+(isFav('model',brandTab+':'+m.model)?'★':'☆')+'</button></div></div><div class="model-card-body-wrap"><div class="model-card-body-inner"><div>'+m.cats.map(function(c){return'<div class="sp-grid"><div class="sp-cat"><h5>'+c.cat+'</h5></div>'+c.items.map(function(sp){return'<div class="sp-item"><div class="name">'+sp.name+'</div><div class="detail">'+sp.official+'</div></div><div class="sp-item"><div class="ugc">'+sp.ugc+'</div></div><div style="display:flex;gap:3px;padding-top:2px"><button class="btn btn-xs" onclick="copy(\''+sp.official.replace(/'/g,"\\'")+'\')">官方</button><button class="btn btn-xs" onclick="copy(\''+sp.ugc.replace(/'/g,"\\'").replace(/"/g,'&quot;')+'\')">UGC</button></div>'}).join('')+'</div>'}).join('')+'</div></div></div></div>'}).join('');
+return'<div class="hero-section" style="margin-bottom:20px"><div class="hero-watermark" style="font-size:80px">'+b.animal+'</div><div class="hero-greeting"><h3>'+b.name+'</h3><p>'+b.slogan+' · '+b.models.length+' 款车型</p></div></div><div class="brand-toggle-row" id="brandToggle"><button class="'+(brandTab==='peugeot'?'active':'')+'" data-brand="peugeot">标致</button><button class="'+(brandTab==='citroen'?'active':'')+'" data-brand="citroen">雪铁龙</button></div><div class="tag-cloud" style="margin-bottom:24px">'+b.keywords.map(function(k){return'<span class="t-bold" onclick="copy(\''+k+'\')">'+k+'</span>'}).join('')+'</div>'+models}
+function toggleModelRow(model){document.getElementById('mr-'+model).classList.toggle('open')}
+
+// ============================================================
+// EVENT — No checklist
+// ============================================================
+function renderEvent(){var ds='',ed=eventDate;if(ed){var n=new Date(),d=new Date(ed),diff=Math.ceil((d-n)/86400000);ds=diff>0?diff+'天':diff===0?'今天':'已过'}
+var pp=EVENT_STEPS.map(function(s){var done=eventChecklist[s.id];return'<div class="ep-step'+(done?' done':'')+'" onclick="document.getElementById(\'sc-'+s.id+'\').scrollIntoView({behavior:\'smooth\',block:\'center\'});setTimeout(function(){document.getElementById(\'sc-'+s.id+'\').classList.add(\'open\')},400)"><span class="ep-num">'+(done?'✓':s.num)+'</span>'+s.title+'</div>'}).join('');
+var tl=EVENT_STEPS.map(function(s){var done=eventChecklist[s.id];return'<div class="timeline-step'+(done?' done':'')+'"><div class="dot">'+(done?'✓':s.num)+'</div><div class="step-card" id="sc-'+s.id+'"><div class="step-card-head" onclick="this.parentElement.classList.toggle(\'open\')"><h4>'+s.num+'. '+s.title+'</h4><span style="font-size:10px;color:var(--text3)">'+s.desc+'</span></div><div class="step-card-body"><div style="display:flex;gap:4px;margin-bottom:10px"><button class="btn btn-sm btn-dark" onclick="copy(this.parentElement.nextElementSibling.textContent)">复制模板</button><button class="btn btn-sm" onclick="aiGenEvent(\''+s.id+'\')" style="background:var(--text);color:var(--bg)">AI</button><button class="btn btn-sm" onclick="toggleECheck(\''+s.id+'\');addXP(50,\'完成活动步骤\')">'+(done?'取消':'✓ 完成')+'</button></div><div style="background:var(--surface2);padding:12px;font-size:11px;line-height:1.8;white-space:pre-wrap" id="tmpl-'+s.id+'">'+s.tmpl+'</div>'+(s.refs.length?'<div style="margin-top:8px;font-size:10px;color:var(--text3)">参考：'+s.refs.map(function(r){return'<span style="cursor:pointer;text-decoration:underline" onclick="copy(\''+r.f+'\')">'+r.n+'</span>'}).join(' ')+'</div>':'')+'</div></div></div>'}).join('');
+var dc=EVENT_STEPS.filter(function(s){return eventChecklist[s.id]}).length;
+return'<div class="hero-section"><div class="hero-watermark" style="font-size:80px">EVENT</div><div class="hero-greeting"><h3>共创活动</h3><p>8 步闭环'+(ds?' · 距下个活动 '+ds:'')+'</p></div></div>'+
+'<div class="stat-cluster"><div class="stat-big"><div class="val">'+dc+'/8</div><div class="lbl">已完成</div></div><div class="stat-sm"><div class="val">2</div><div class="lbl">本月活动</div></div><div class="stat-tiny" onclick="var d=prompt(\'活动日期(YYYY-MM-DD):\',eventDate||\'\');if(d){eventDate=d;localStorage.setItem(\'sl_ed\',d);render()}" style="cursor:pointer"><div class="val">'+(ds||'—')+'</div><div class="lbl">倒计时·设置</div></div></div>'+
+'<div class="event-progress">'+pp+'</div><div class="timeline">'+tl+'</div>'}
+function toggleECheck(id){if(eventChecklist[id])delete eventChecklist[id];else eventChecklist[id]=true;S('ec',eventChecklist);render()}
+
+// ============================================================
+// PLAN, COPY, VIDEO, TOOLS (compact)
+// ============================================================
+function initPlanSubnav(){var el=document.getElementById('planSubnav');if(el)el.onclick=function(e){if(e.target.tagName==='BUTTON'){document.querySelectorAll('#planSubnav button').forEach(function(b){b.classList.remove('active')});e.target.classList.add('active');renderPlanPanel(e.target.dataset.sub)}}}
+function renderPlan(){setTimeout(function(){renderPlanPanel('strategy')},50);return'<div class="hero-section"><div class="hero-watermark" style="font-size:70px">PLAN</div><div class="hero-greeting"><h3>策划中台</h3><p>策略 · 活动 · 文档</p></div></div><div class="subnav" id="planSubnav"><button class="active" data-sub="strategy">策略与市场</button><button data-sub="campaign">活动与传播</button><button data-sub="docs">文档库</button></div><div id="planPanel"></div>'}
+function renderPlanPanel(sub){var h='';if(sub==='strategy')h='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="card"><h4>竞品分析框架</h4><div style="background:var(--surface2);padding:12px;font-size:10px;line-height:1.8;white-space:pre-wrap">【竞品分析】\n\n一、分析目标\n二、品牌定位对比\n三、车型矩阵对比\n四、用户运营对比\n五、关键发现与建议</div><button class="btn btn-sm btn-dark" style="margin-top:8px" onclick="copy(this.parentElement.querySelector(\'div[style]\').textContent)">复制框架</button></div><div class="card"><h4>洞察速记</h4><textarea id="marketNotes" placeholder="市场趋势、竞品动态…" style="width:100%;min-height:180px;border:none;font-size:11px;font-family:var(--font);background:var(--surface2);resize:vertical;outline:none;padding:10px" oninput="userData.mn=this.value;S(\'ud\',userData)"></textarea></div></div>';
+else if(sub==='campaign')h='<div class="card" style="margin-bottom:8px"><h4>活动策划方案框架</h4><div style="background:var(--surface2);padding:12px;font-size:10px;line-height:1.8;white-space:pre-wrap">【活动策划方案】\n\n一、活动背景\n二、活动目标\n三、活动策略\n四、活动执行\n五、预算预估\n六、效果预估与KPI</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="card"><h4>商城运营</h4><p style="font-size:10px;color:var(--text3)">定位 · 商品 · 积分 · 激励 · 节奏</p></div><div class="card"><h4>传播规划</h4><p style="font-size:10px;color:var(--text3)">预热→引爆→发酵→长尾</p></div></div>';
+else h='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">'+[{t:'年规 PPT',d:'回顾→分析→策略→拆解'},{t:'车友会优化',d:'现状→诊断→优化→执行'},{t:'品牌分享会',d:'理念→产品→生态→展望'},{t:'UGC活动方案',d:'背景→创意→执行→传播'}].map(function(x){return'<div class="card"><h4>'+x.t+'</h4><p style="font-size:10px;color:var(--text3)">'+x.d+'</p></div>'}).join('')+'</div>';
+var p=document.getElementById('planPanel');if(p)p.innerHTML=h;setTimeout(function(){var mn=document.getElementById('marketNotes');if(mn&&userData.mn)mn.value=userData.mn},100)}
+
+function initCopySubnav(){var el=document.getElementById('copySubnav');if(el)el.onclick=function(e){if(e.target.tagName==='BUTTON'){document.querySelectorAll('#copySubnav button').forEach(function(b){b.classList.remove('active')});e.target.classList.add('active');renderCopyPanel(e.target.dataset.sub)}}}
+function renderCopy(){return'<div class="hero-section"><div class="hero-watermark" style="font-size:70px">COPY</div><div class="hero-greeting"><h3>推文工具箱</h3><p>智能组装 · 模板 · 转发语 · 词汇库</p></div></div><div class="subnav" id="copySubnav"><button class="active" data-sub="assembly">智能组装</button><button data-sub="tmpl">文案模板</button><button data-sub="fwd">转发语</button><button data-sub="words">词汇库</button></div><div id="copyPanel"></div>'}
+function renderCopyPanel(sub){var h='';if(sub==='assembly'){h='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">'+['opening','body','closing'].map(function(k){var label=k==='opening'?'开场':k==='body'?'正文（多选）':'收尾',opts=ASSEMBLY[k],sel=assemblySlots[k];return'<div class="card" style="padding:14px"><h5 style="font-size:9px;color:var(--text3);letter-spacing:.1em;margin-bottom:8px">'+label+'</h5><div style="display:flex;flex-wrap:wrap;gap:4px">'+opts.map(function(o){var isSel=k==='body'?Array.isArray(sel)&&sel.includes(o.id):sel===o.t;return'<span class="keyword-tag'+(isSel?'" style="background:var(--text);color:var(--bg);border-color:var(--text)':'')+'" style="cursor:pointer" onclick="toggleAsm(\''+k+'\',\''+(k==='body'?o.id:o.t.replace(/'/g,"\\'"))+'\')">'+o.t.substring(0,18)+'</span>'}).join('')+'</div></div>'}).join('')+'</div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="btn btn-sm btn-dark" onclick="copyAsm()">复制结果</button><button class="btn btn-sm" onclick="assemblySlots={opening:null,body:[],closing:null};render()">清空</button><button class="btn btn-sm" onclick="aiAssistAssembly()" style="background:var(--text);color:var(--bg)">AI 生成</button><button class="btn btn-sm" onclick="saveTemplate()">存为模板</button></div><div class="card" style="min-height:200px;font-size:12px;line-height:2;white-space:pre-wrap">'+(getAsmPreview()||'选择模块…')+'</div>'}
+else if(sub==='tmpl'){h='<div class="type-grid" id="typeGrid"></div><div style="display:grid;grid-template-columns:260px 1fr;gap:8px"><div class="card" id="tmplForm" style="padding:14px"></div><div class="card" style="font-size:11px;line-height:2;white-space:pre-wrap" id="tmplPreview">选择类型…</div></div>'+
+'<div style="margin-top:12px"><h4 style="font-size:12px;font-weight:700;margin-bottom:8px">我的模板</h4><div id="tplList"></div></div>';setTimeout(function(){renderTypeGrid();renderTmplForm();renderTplList()},50)}
+else if(sub==='fwd'){h='<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:16px"><div class="brand-toggle-row" style="margin:0"><button class="'+(fwdBrand==='peugeot'?'active':'')+'" onclick="fwdBrand=\'peugeot\';render()">标致</button><button class="'+(fwdBrand==='citroen'?'active':'')+'" onclick="fwdBrand=\'citroen\';render()">雪铁龙</button></div><select id="fwdFormula" style="padding:5px 8px;border:1px solid var(--border);font-size:10px"><option value="ranking">榜单活动</option><option value="festival">节日情感</option><option value="promo">促销拉新</option><option value="engage">互动征集</option></select><input id="fwdEvent" placeholder="活动名" style="padding:5px 8px;border:1px solid var(--border);font-size:10px;width:80px"><button class="btn btn-sm btn-dark" onclick="genFwd();addXP(10,\'生成转发语\')">生成</button><button class="btn btn-sm" onclick="var t=D(\'fwdEvent\')||\'活动\';aiGenFwd(t)" style="background:var(--text);color:var(--bg)">AI</button></div><div class="fwd-grid" id="fwdGrid"></div><h4 style="font-size:12px;font-weight:700;margin:20px 0 10px">常用参考</h4><div class="fwd-grid" id="fwdQuick"></div>'}
+else if(sub==='words')h=renderWords();
+var p=document.getElementById('copyPanel');if(p)p.innerHTML=h;if(sub==='fwd'){setTimeout(renderFwdQuick,50);renderFwdResults()}}
+function getAsmPreview(){var t='';if(assemblySlots.opening)t+=assemblySlots.opening+'\n\n';if(assemblySlots.body.length)t+=assemblySlots.body.join('\n')+'\n';if(assemblySlots.closing)t+='\n'+assemblySlots.closing;return t.trim()}
+function toggleAsm(k,val){if(k==='body'){var i=assemblySlots.body.indexOf(val);if(i>-1)assemblySlots.body.splice(i,1);else assemblySlots.body.push(val)}else{assemblySlots[k]=assemblySlots[k]===val?null:val}render()}
+function copyAsm(){var t=getAsmPreview();if(!t){toast('请先选择模块');return}copy(t);addXP(30,'完成推文组装')}
+function renderTypeGrid(){var el=document.getElementById('typeGrid');if(!el)return;el.innerHTML=COPY_TYPES.map(function(t){return'<div class="type-card'+(t.id===selectedCopyType?' selected':'')+'" onclick="selectedCopyType=\''+t.id+'\';render()"><div style="font-size:20px">'+t.i+'</div><div style="font-size:11px;font-weight:700">'+t.n+'</div></div>'}).join('')}
+function renderTmplForm(){var el=document.getElementById('tmplForm');if(!el)return;el.innerHTML='<div style="display:flex;flex-direction:column;gap:5px"><div class="brand-toggle-row" style="margin:0 0 4px"><button class="'+(brandTab==='peugeot'?'active':'')+'" data-brand="peugeot" onclick="brandTab=\'peugeot\';renderTmplForm()">标致</button><button class="'+(brandTab==='citroen'?'active':'')+'" data-brand="citroen" onclick="brandTab=\'citroen\';renderTmplForm()">雪铁龙</button></div><input id="tmplCar" placeholder="车型" style="padding:5px 8px;border:1px solid var(--border);font-size:10px;outline:none"><input id="tmplCampaign" placeholder="活动"><input id="tmplTag" placeholder="话题"><button class="btn btn-sm btn-dark" onclick="genTmpl()">生成初稿</button><button class="btn btn-sm" onclick="var c=D(\'tmplCampaign\');var r=D(\'tmplCar\');aiGenCopy((c||\'推文\'),(r||\'\'))" style="background:var(--text);color:var(--bg)">AI 写全文</button></div>'}
+function genTmpl(){var b=BRANDS[brandTab],t=COPY_TYPES.find(function(t){return t.id===selectedCopyType});document.getElementById('tmplPreview').textContent='【'+b.name+' · '+t.n+'】\n\n车型：'+(D('tmplCar')||'[车型]')+' | 话题：'+(D('tmplTag')||'#[话题]')+'\n调性：'+b.tone+'\n\n[模板框架填充]';toast('已生成')}
+function genFwd(){var b=BRANDS[fwdBrand],ev=D('fwdEvent')||'[活动]',rw=D('fwdReward')||'好礼',f=document.getElementById('fwdFormula').value,gens={ranking:function(){return[b.keywords[0]+'回归\n高光时刻再度开启\n带话题发帖即可入围\n'+rw+'等你解锁\n'+b.hashtags[0]]},festival:function(){return[b.keywords[0]+'相伴，'+ev+'同行\n与'+b.name.replace('东风','')+'共赴热爱\n'+b.hashtags[0]]},promo:function(){return[ev+'惊喜不停\n参与活动赢抽奖机会\n限量福利\n'+b.hashtags[0]]},engage:function(){return[b.fans+'同行\n畅谈对'+b.name.replace('东风','')+'的热爱\n赢取'+rw+'\n'+b.hashtags[0]]}};fwdResults=(gens[f]||gens.ranking)();selectedFwd=0;renderFwdResults();toast('已生成')}
+function renderFwdResults(){var el=document.getElementById('fwdGrid');if(!el)return;el.innerHTML=fwdResults.map(function(r,i){return'<div class="fwd-card'+(i===selectedFwd?' selected':'')+'" onclick="selectedFwd='+i+';renderFwdResults()"><button class="btn btn-xs fcp" onclick="event.stopPropagation();copy(\`'+r.replace(/`/g,'\\`')+'\`)">复制</button>'+r.replace(/\n/g,'<br>')+'</div>'}).join('')}
+function renderFwdQuick(){var el=document.getElementById('fwdQuick');if(!el)return;var b=BRANDS[fwdBrand];el.innerHTML=[b.hashtags[0]+'\n'+b.keywords[0]+'回归\n带话题发帖即可入围',b.fans+'同行\n畅谈对'+b.name.replace('东风','')+'的热爱\n评论区互动赢福利','品牌福利来袭\n参与活动赢抽奖机会\n限定好礼送不停'].map(function(r){return'<div class="fwd-card" onclick="copy(\`'+r.replace(/`/g,'\\`')+'\`)"><button class="btn btn-xs fcp">复制</button>'+r.replace(/\n/g,'<br>')+'</div>'}).join('')}
+function renderWords(){var pw=[{g:'开场',w:['狮魂觉醒','燃擎时刻','狮友同行']},{g:'驾控',w:['弯道艺术家','贴地飞行','大师级底盘']},{g:'收尾',w:['以热爱致远方','每一程皆热爱']}],cw=[{g:'开场',w:['龙耀时刻','自在从容','龙友同行']},{g:'舒适',w:['魔毯悬架','法式舒适','从容不迫']},{g:'收尾',w:['以自在致远方','自在每一程']}];return'<div class="word-grid"><div class="word-col"><div class="word-ch">东风标致</div>'+pw.map(function(g){return'<div style="margin-bottom:10px"><h5 style="font-size:8px;color:var(--text3);letter-spacing:.1em;margin-bottom:4px">'+g.g+'</h5><div style="display:flex;flex-wrap:wrap;gap:3px">'+g.w.map(function(w){return'<span class="keyword-tag p" onclick="copy(\''+w+'\')">'+w+'</span>'}).join('')+'</div></div>'}).join('')+'</div><div class="word-col"><div class="word-ch">东风雪铁龙</div>'+cw.map(function(g){return'<div style="margin-bottom:10px"><h5 style="font-size:8px;color:var(--text3);letter-spacing:.1em;margin-bottom:4px">'+g.g+'</h5><div style="display:flex;flex-wrap:wrap;gap:3px">'+g.w.map(function(w){return'<span class="keyword-tag c" onclick="copy(\''+w+'\')">'+w+'</span>'}).join('')+'</div></div>'}).join('')+'</div></div>'}
+
+// TEMPLATES
+function saveTemplate(){var t=getAsmPreview();if(!t){toast('请先选择模块');return}var name=prompt('模板名称：','模板 '+new Date().toLocaleDateString());if(!name)return;templates[name]={brand:brandTab,type:selectedCopyType,content:t,slots:JSON.parse(JSON.stringify(assemblySlots))};S('templates',templates);renderTplList();toast('模板已保存')}
+function loadTemplate(name){var t=templates[name];if(!t)return;assemblySlots=t.slots||{opening:null,body:[],closing:null};brandTab=t.brand||'peugeot';selectedCopyType=t.type||'ugc';render();toast('模板已加载：'+name)}
+function deleteTemplate(name){delete templates[name];S('templates',templates);renderTplList();toast('已删除')}
+function renderTplList(){var el=document.getElementById('tplList');if(!el)return;var keys=Object.keys(templates);if(!keys.length){el.innerHTML='<div class="empty-state">暂无模板，组装推文后可保存</div>';return}el.innerHTML=keys.map(function(k){return'<div class="todo-item"><span onclick="loadTemplate(\''+k+'\')" style="cursor:pointer">'+k+'</span><span style="font-size:9px;color:var(--text3);margin-left:auto">'+(templates[k].brand==='peugeot'?'标致':'雪铁龙')+'</span><span style="cursor:pointer;color:var(--text3);margin-left:6px" onclick="deleteTemplate(\''+k+'\')">×</span></div>'}).join('')}
+
+// VIDEO
+function initVideoSubnav(){var el=document.getElementById('videoSubnav');if(el)el.onclick=function(e){if(e.target.tagName==='BUTTON'){document.querySelectorAll('#videoSubnav button').forEach(function(b){b.classList.remove('active')});e.target.classList.add('active');renderVideoPanel(e.target.dataset.sub)}}}
+function renderVideo(){return'<div class="hero-section"><div class="hero-watermark" style="font-size:70px">VIDEO</div><div class="hero-greeting"><h3>视频工坊</h3><p>脚本 · Brief · 分镜头</p></div></div><div class="subnav" id="videoSubnav"><button class="active" data-sub="vtypes">视频类型</button><button data-sub="vscript">脚本工具箱</button><button data-sub="vbrief">Brief 模板</button></div><div id="videoPanel"></div>'}
+function renderVideoPanel(sub){var h='';if(sub==='vtypes')h='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">'+[{i:'○',n:'先导片',s:'30s–90s · 电影感'},{i:'◉',n:'活动回顾',s:'2–5min · 温暖真实'},{i:'◎',n:'领导视频',s:'1–3min · 正式真诚'},{i:'●',n:'产品体验',s:'30s–2min · 精致专业'}].map(function(t){return'<div class="card"><h4>'+t.i+' '+t.n+'</h4><p style="font-size:10px;color:var(--text3)">'+t.s+'</p></div>'}).join('')+'</div>';
+else if(sub==='vscript')h='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="card"><h4>分镜头</h4><div style="font-size:10px;line-height:1.8;white-space:pre-wrap">镜号|景别|画面|VO|时长\n1|远景|[画面]|[文案]|3s</div></div><div class="card"><h4>VO 旁白</h4><div style="font-size:10px;line-height:1.8;white-space:pre-wrap">[00:00-00:05] 开场\n[00:05-00:20] 展开\n[00:20-00:30] 升华</div></div></div>';
+else h='<div class="card"><h4>Brief 模板</h4><div style="background:var(--surface2);padding:12px;font-size:10px;line-height:1.8;white-space:pre-wrap">【视频创意 Brief】\n\n一、项目背景\n二、视频目标\n三、创意方向\n四、制作要求\n五、品牌规范\n六、时间节点</div></div>';
+var p=document.getElementById('videoPanel');if(p)p.innerHTML=h}
+
+// ============================================================
+// TOOLS
+// ============================================================
+function renderTools(){return'<div class="hero-section"><div class="hero-watermark" style="font-size:70px">TOOLS</div><div class="hero-greeting"><h3>工具箱</h3><p>换装 · 积分 · 统计 · 清单</p></div></div><div class="tools-list">'+
+'<div class="tool-row"><div class="tool-head"><h4 style="font-size:13px;font-weight:800">品牌换装</h4><p style="font-size:9px;color:var(--text3)">标致 ⇄ 雪铁龙互转</p></div><div class="tool-body"><textarea id="swapInput" placeholder="粘贴文案…" style="min-height:50px;width:100%;padding:8px;border:1px solid var(--border);font-size:10px;outline:none;resize:vertical"></textarea><div style="display:flex;gap:4px;margin-top:4px"><button class="btn btn-sm btn-dark" onclick="doSwap(\'peugeot\');addXP(10,\'使用品牌换装\')">标致→雪铁龙</button><button class="btn btn-sm" onclick="doSwap(\'citroen\')" style="border-color:var(--citroen);color:var(--citroen)">雪铁龙→标致</button></div><div id="swapResult" style="margin-top:6px;font-size:10px;line-height:1.8"></div></div></div>'+
+'<div class="tool-row"><div class="tool-head"><h4 style="font-size:13px;font-weight:800">积分计算</h4><p style="font-size:9px;color:var(--text3)">UGC 自动计算</p></div><div class="tool-body"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:10px"><div>APP发帖<input type="number" id="calcApp" value="0" oninput="runCalc()" style="width:100%">×100</div><div>精华<input type="number" id="calcAppS" value="0" oninput="runCalc()" style="width:100%">×600</div><div>社媒<input type="number" id="calcSocial" value="0" oninput="runCalc()" style="width:100%">×100</div><div>自定义<input type="number" id="calcCustP" value="0" oninput="runCalc()" style="width:40px">×<input type="number" id="calcCustQ" value="0" oninput="runCalc()" style="width:40px"></div></div><div style="text-align:center;margin-top:6px;padding:10px;background:var(--surface2);font-size:22px;font-weight:900" id="calcTotal">0</div></div></div>'+
+'<div class="tool-row"><div class="tool-head"><h4 style="font-size:13px;font-weight:800">字数统计</h4></div><div class="tool-body"><textarea id="wcInput" placeholder="粘贴即统计" style="min-height:50px;width:100%;padding:8px;border:1px solid var(--border);font-size:10px;outline:none;resize:vertical" oninput="var t=this.value;document.getElementById(\'wcResult\').innerHTML=\'总 <b>\'+t.length+\'</b> 字符 · 去空格 <b>\'+t.replace(/\\\\s/g,\'\').length+\'</b>\'"></textarea><div id="wcResult" style="font-size:10px;color:var(--text2);margin-top:4px">总 <b>0</b> 字符</div></div></div>'+
+'<div class="tool-row"><div class="tool-head"><h4 style="font-size:13px;font-weight:800">预发布清单</h4></div><div class="tool-body"><div style="display:flex;flex-direction:column;gap:4px;font-size:10px"><label><input type="checkbox"> 文字≥100字</label><label><input type="checkbox"> 图片≥3张</label><label><input type="checkbox"> 话题已添加</label><label><input type="checkbox"> 无AI词汇</label><label><input type="checkbox"> CTA已添加</label></div></div></div></div>'}
+function doSwap(from){var inp=document.getElementById('swapInput'),txt=inp.value;if(!txt.trim()){toast('请先粘贴');return}var res=txt;Object.keys(BRAND_SWAP).forEach(function(k){res=res.replace(new RegExp(k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'),'<mark>'+BRAND_SWAP[k]+'</mark>')});document.getElementById('swapResult').innerHTML='<div style="background:var(--surface2);padding:8px;font-size:10px;line-height:1.8">'+res+'</div><button class="btn btn-xs btn-dark" style="margin-top:4px" onclick="var t=document.getElementById(\'swapInput\').value;Object.keys(BRAND_SWAP).forEach(function(k){t=t.replace(new RegExp(k.replace(/[.*+?^${}()|[\\]\\\\]/g,\'\\\\\\\\$&\'),\'g\'),BRAND_SWAP[k])});copy(t)">复制</button>'}
+function runCalc(){var a=(parseInt(document.getElementById('calcApp').value)||0)*100,as=(parseInt(document.getElementById('calcAppS').value)||0)*600,s=(parseInt(document.getElementById('calcSocial').value)||0)*100,c=(parseInt(document.getElementById('calcCustP').value)||0)*(parseInt(document.getElementById('calcCustQ').value)||0);document.getElementById('calcTotal').textContent=(a+as+s+c).toLocaleString()}
+
+// ============================================================
+// ADVENTURE
+// ============================================================
+function openAdventure(){var o=document.getElementById('advOverlay');o.classList.add('show');renderAdventure()}
+function closeAdv(){document.getElementById('advOverlay').classList.remove('show')}
+document.getElementById('advOverlay').addEventListener('click',function(e){if(e.target===this)closeAdv()});
+function renderAdventure(){
+  var lvl=currentLevel(),xp=currentXP(),xpn=xpToNext(),pct=Math.round(xp/xpn*100),pfx=getPrefixName(equippedPrefix);
+  var h='<div class="adv-head"><div class="lvl-badge">'+lvl+'</div><div><h3>'+(pfx?pfx+' · ':'')+'LEXUN</h3><p>⭐ Lv.'+lvl+' · 成就 '+Object.keys(ACHIEVEMENTS).length+' 个</p></div></div>'+
+  '<div class="adv-xp-bar"><div style="display:flex;justify-content:space-between;font-size:10px"><span>'+xp+' / '+xpn+' XP</span><span>距 Lv.'+(lvl+1)+' 还需 '+(xpn-xp)+' XP</span></div><div class="xp-track"><div class="xp-fill" style="width:'+pct+'%"></div></div></div>'+
+  '<div class="adv-section"><h4>装备前缀</h4><div class="prefix-grid">'+PREFIXES.map(function(p){var has=p.ach?ACHIEVEMENTS[p.ach]:true;return'<div class="prefix-option'+(equippedPrefix===p.id?' equipped':'')+(has?'':' locked')+'"'+(has?' onclick="equipPrefix(\''+p.id+'\')"':'')+'>'+(has?p.n:'???')+(equippedPrefix===p.id?' ✓':'')+'</div>'}).join('')+'</div></div>'+
+  '<div class="adv-section"><h4>成就墙 ('+Object.keys(ACHIEVEMENTS).length+'/'+PREFIXES.length+')</h4><div class="ach-grid">'+PREFIXES.map(function(p){var u=ACHIEVEMENTS[p.ach];return'<div class="ach-item'+(u?' unlocked':' locked')+'"><span class="ach-icon">'+(u?'🏆':'🔒')+'</span><span class="ach-name">'+p.n+'</span>'+(u?'<span class="ach-date">'+u+'</span>':'')+'</div>'}).join('')+'</div></div>'+
+  '<div class="adv-section"><h4>近期动态</h4><div class="activity-log">'+XP_LOG.slice(-20).reverse().map(function(e){return'<div><span>'+e.time+'</span>'+e.reason+' +'+e.xp+' XP</div>'}).join('')+'</div></div>';
+  document.getElementById('advContent').innerHTML=h;
+}
+function equipPrefix(pid){equippedPrefix=pid;localStorage.setItem('sl_prefix',pid);renderAdventure();toast('前缀已装备：'+getPrefixName(pid))}
+
+// ============================================================
+// EDITOR with slash lookup
+// ============================================================
+function openEditor(title,brand,model){document.getElementById('editorOverlay').classList.add('show');document.getElementById('editorTitle').textContent=title||'编辑器';document.getElementById('editorTextarea').value='';renderEditorSidebar(brand,model);document.getElementById('editorTextarea').focus();updateEditorStats()}
+function closeEditor(){document.getElementById('editorOverlay').classList.remove('show')}
+function renderEditorSidebar(brand,model){var sps='',kws='';if(brand&&model){var b=BRANDS[brand],m=b.models.find(function(m){return m.model===model});if(m){m.cats.forEach(function(c){c.items.forEach(function(sp){sps+='<div class="chip" style="padding:3px 6px;border:1px solid var(--border);cursor:pointer;font-size:9px;margin-bottom:2px" onclick="insertAtCursor(\''+sp.official.replace(/'/g,"\\'")+'\')">'+sp.name+'</div>'})});b.keywords.forEach(function(k){kws+='<div class="chip" style="padding:3px 6px;border:1px solid var(--border);cursor:pointer;font-size:9px;margin-bottom:2px" onclick="insertAtCursor(\''+k+'\')">'+k+'</div>'})}}document.getElementById('editorSPs').innerHTML=sps||'<span style="font-size:9px;color:var(--text3)">打开车型编辑器</span>';document.getElementById('editorKeywords').innerHTML=kws}
+function insertAtCursor(t){var ta=document.getElementById('editorTextarea'),s=ta.selectionStart,e=ta.selectionEnd;ta.value=ta.value.substring(0,s)+t+ta.value.substring(e);ta.selectionStart=ta.selectionEnd=s+t.length;ta.focus();updateEditorStats()}
+function insertFromRef(){var side=document.getElementById('editorSidebar'),chips=side.querySelectorAll('.chip');if(chips.length)chips[0].click()}
+function saveDraft(){var ta=document.getElementById('editorTextarea'),txt=ta.value.trim();if(!txt){toast('内容为空');return}drafts.unshift({title:document.getElementById('editorTitle').textContent,content:txt,time:new Date().toLocaleString()});S('drafts',drafts);toast('草稿已保存');addXP(5,'保存草稿')}
+function openDraft(i){var d=drafts[i];if(!d)return;openEditor(d.title);document.getElementById('editorTextarea').value=d.content;updateEditorStats()}
+function copyEditorContent(){var t=document.getElementById('editorTextarea').value;if(!t.trim()){toast('内容为空');return}copy(t)}
+function updateEditorStats(){var ta=document.getElementById('editorTextarea');if(!ta)return;var t=ta.value;document.getElementById('editorCharCount').textContent=t.length;var flags=['总而言之','众所周知','不可否认','赋能','抓手','闭环'];document.getElementById('editorAIWarning').style.display=flags.some(function(f){return t.includes(f)})?'inline':'none'}
+// Slash lookup
+var slashTimeout;document.getElementById('editorTextarea').addEventListener('input',function(e){updateEditorStats();var ta=e.target,v=ta.value,cp=ta.selectionStart,lastSlash=v.lastIndexOf('/',cp-1);if(lastSlash>-1&&(lastSlash===0||v[lastSlash-1]===' '||v[lastSlash-1]==='\n')){var q=v.substring(lastSlash+1,cp).toLowerCase();clearTimeout(slashTimeout);slashTimeout=setTimeout(function(){doSlashLookup(q,ta,lastSlash)},200)}});
+function doSlashLookup(q,ta,pos){if(q.length<1)return;var results=[];Object.values(BRANDS).forEach(function(b){b.models.forEach(function(m){if(m.model.toLowerCase().includes(q)||m.pos.includes(q))results.push({l:m.model+' '+m.pos,sp:m});m.cats.forEach(function(c){c.items.forEach(function(sp){if(sp.name.includes(q))results.push({l:sp.name,t:sp.official})})})})});
+if(results.length){showSlashDropdown(results.slice(0,6),ta,pos)}else{closeSlashDropdown()}}
+function showSlashDropdown(items,ta,pos){closeSlashDropdown();var d=document.createElement('div');d.id='slashDrop';d.style.cssText='position:fixed;background:var(--surface);border:2px solid var(--text);padding:4px;z-index:500;max-width:280px;font-size:11px';items.forEach(function(item){var opt=document.createElement('div');opt.style.cssText='padding:6px 10px;cursor:pointer';opt.textContent='/ '+item.l;opt.onclick=function(){var v=ta.value,before=v.lastIndexOf('/',pos);ta.value=v.substring(0,before)+(item.t||item.l)+' '+v.substring(ta.selectionStart);closeSlashDropdown();ta.focus();updateEditorStats()};d.appendChild(opt)});document.body.appendChild(d);var rect=ta.getBoundingClientRect();d.style.top=Math.min(rect.bottom+4,window.innerHeight-200)+'px';d.style.left=rect.left+'px'}
+function closeSlashDropdown(){var el=document.getElementById('slashDrop');if(el)el.remove()}
+document.getElementById('editorOverlay').addEventListener('click',function(e){if(e.target===this)closeEditor()});
+document.getElementById('editorTextarea').addEventListener('input',updateEditorStats);
+
+// ============================================================
+// EXPORT
+// ============================================================
+function exportDoc(){
+  var t=document.getElementById('editorTextarea').value;if(!t.trim()){toast('请先输入内容');return}
+  var html='<html><head><meta charset="UTF-8"><style>body{font-family:SimSun,serif;font-size:14px;line-height:2;padding:40px}h1{font-size:20px;border-bottom:2px solid #000;padding-bottom:8px}p{margin:8px 0}</style></head><body>'+t.replace(/\n/g,'<p>')+'</body></html>';
+  var blob=new Blob([html],{type:'application/msword'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(document.getElementById('editorTitle').textContent||'文档')+'.doc';a.click();toast('已导出 Word');addXP(20,'导出文件')}
+function exportExcel(data,filename){
+  var csv='﻿'+data.map(function(r){return r.join(',')}).join('\n');
+  var blob=new Blob([csv],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(filename||'表格')+'.csv';a.click();toast('已导出 Excel');addXP(20,'导出文件')
+}
+// Quick export: event list to Excel
+function exportEventList(){var data=[['步骤','品牌','完成状态']];EVENT_STEPS.forEach(function(s){['标致','雪铁龙'].forEach(function(b){var id=s.id+(b==='标致'?'_p':'_c');data.push([s.title,b,eventChecklist[id]?'✓':''])});});exportExcel(data,'活动清单')}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function toggleSettings(){var o=document.getElementById('settingsOverlay');o.classList.toggle('show');if(o.classList.contains('show')){document.getElementById('settingsApiKey').value=getAPIKey();document.getElementById('settingsModel').value=localStorage.getItem('sl_model')||'deepseek-chat'}}
+function saveSettings(){var key=document.getElementById('settingsApiKey').value.trim();if(key)localStorage.setItem('sl_apikey',key);localStorage.setItem('sl_model',document.getElementById('settingsModel').value);toggleSettings();toast('设置已保存')}
+function getAPIKey(){return localStorage.getItem('sl_apikey')||''}
+
+// ============================================================
+// AI — DeepSeek (OpenAI format, streaming)
+// ============================================================
+function toggleAIPanel(){var o=document.getElementById('aiOverlay');o.classList.toggle('show');if(o.classList.contains('show')){updateAIContext();renderAIQuickActions();renderAIMessages();setTimeout(function(){document.getElementById('aiInput').focus()},200)}}
+function renderAIMessages(){var el=document.getElementById('aiMessages');el.innerHTML=aiMessages.map(function(m){return'<div class="ai-msg '+m.role+'">'+m.text.replace(/\n/g,'<br>')+'</div>'}).join('');el.scrollTop=el.scrollHeight}
+async function sendAIMessage(){
+  if(aiLoading)return;var inp=document.getElementById('aiInput'),txt=inp.value.trim();if(!txt){toast('请输入内容');return}
+  var key=getAPIKey();if(!key){toast('请先设置 DeepSeek API Key')}
+  aiMessages.push({role:'user',text:txt});inp.value='';renderAIMessages();
+  aiLoading=true;document.getElementById('aiSendBtn').disabled=true;
+  var msgEl=document.createElement('div');msgEl.className='ai-msg assistant';msgEl.innerHTML='<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div>思考中…</div>';
+  document.getElementById('aiMessages').appendChild(msgEl);
+  try{
+    var resp=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:'你是神龙工作台AI助理，服务于东风标致和东风雪铁龙品牌。'},{role:'user',content:'【上下文：'+aiContext+'】'+txt}],max_tokens:2000,temperature:.7,stream:true})});
+    if(!resp.ok){var err=await resp.json().catch(function(){return{}});throw new Error(err.error?.message||'请求失败')}
+    var reader=resp.body.getReader(),decoder=new TextDecoder(),buf='',full='';msgEl.innerHTML='';
+    while(true){var d=await reader.read();if(d.done)break;buf+=decoder.decode(d.value,{stream:true});var lines=buf.split('\n');buf=lines.pop()||'';
+      for(var i=0;i<lines.length;i++){var l=lines[i].trim();if(!l||!l.startsWith('data: '))continue;var data=l.slice(6);if(data==='[DONE]')continue;
+        try{var p=JSON.parse(data);var delta=p.choices[0].delta;if(delta&&delta.content){full+=delta.content;msgEl.innerHTML=full.replace(/\n/g,'<br>')}}catch(e){}}}
+    if(!full)full='（返回为空）';msgEl.innerHTML=full.replace(/\n/g,'<br>');aiMessages.push({role:'assistant',text:full});addXP(5,'AI辅助')
+  }catch(e){msgEl.innerHTML='<span style="color:var(--citroen)">错误：'+e.message+'</span>'}
+  aiLoading=false;document.getElementById('aiSendBtn').disabled=false;document.getElementById('aiMessages').scrollTop=document.getElementById('aiMessages').scrollHeight;
+}
+function aiQuick(p){document.getElementById('aiInput').value=p;if(!document.getElementById('aiOverlay').classList.contains('show'))toggleAIPanel();else sendAIMessage()}
+async function aiGenCopy(type,car){if(!getAPIKey()){toast('请先设置 API Key');return}toggleAIPanel();document.getElementById('aiInput').value='帮我写一篇推文。'+type+(car?'，车型：'+car:'')+'。要求有标题、开头情感引入、正文分段、结尾CTA。';sendAIMessage()}
+async function aiGenEvent(s){if(!getAPIKey()){toast('请先设置 API Key');return}var p={theme:'帮我策划一个车主共创活动主题',speech:'帮我写品牌领导在车主活动上的发言稿',script:'帮我写车主共创活动全流程主持台本',review:'帮我写一篇车主共创活动回顾推文'};toggleAIPanel();document.getElementById('aiInput').value=p[s]||'帮我生成活动内容';sendAIMessage()}
+async function aiGenFwd(topic){if(!getAPIKey()){toast('请先设置 API Key');return}toggleAIPanel();document.getElementById('aiInput').value='帮我为「'+topic+'」生成3条社交媒体转发语，简洁有力，带emoji和话题标签';sendAIMessage()}
+async function aiAssistEditor(){var t=document.getElementById('editorTextarea').value;if(!getAPIKey()){toast('请先设置 API Key');return}if(!t.trim()){toast('请先输入内容');return}toggleAIPanel();document.getElementById('aiInput').value='帮我润色以下文字：\n\n'+t;sendAIMessage()}
+async function aiAssistAssembly(){if(!getAPIKey()){toast('请先设置 API Key');return}toggleAIPanel();var t=getAsmPreview();document.getElementById('aiInput').value='帮我用以下框架生成一篇推文：\n\n'+(t||'请先生成框架');sendAIMessage()}
+
+// ============================================================
+// INIT
+// ============================================================
+(function init(){
+  if(!localStorage.getItem('sl_apikey'))localStorage.setItem('sl_apikey','');
+  updateSideLvl();render();updateAIContext();renderAIQuickActions();
+  setTimeout(function(){var ls=document.getElementById('splash');if(ls&&!ls.classList.contains('hide'))dismissSplash()},4000);
+})();
+</script>
+</body>
+</html>
