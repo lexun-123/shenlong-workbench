@@ -40,16 +40,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
    ============================================================ */
 .app{display:flex;min-height:100vh;opacity:0;filter:blur(6px);transition:opacity .6s ease,filter .6s ease}
 .app.ready{opacity:1;filter:blur(0)}
-.sidebar{width:180px;background:var(--sidebar);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
-.sidebar-brand{padding:0 16px 20px}
-.sidebar-brand h2{font-size:14px;font-weight:800;color:#FFF;letter-spacing:.03em}
+.sidebar{width:170px;background:var(--sidebar);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sidebar-brand{padding:0 14px 18px}
+.sidebar-brand h2{font-size:13px;font-weight:800;color:#FFF;letter-spacing:.03em}
 .sidebar-brand span{font-size:9px;color:#666;letter-spacing:.15em;display:block;margin-top:2px}
-.sidebar-nav{flex:1;padding:0 8px}
-.sidebar-nav .sec-label{font-size:9px;color:#555;letter-spacing:.12em;text-transform:uppercase;padding:14px 10px 6px;font-weight:600}
-.sidebar-nav button{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border:none;background:transparent;font-size:12px;color:#999;cursor:pointer;font-family:var(--font);border-radius:4px;transition:var(--t);text-align:left;letter-spacing:.02em}
+.sidebar-nav{flex:1;padding:0 6px}
+.sidebar-nav .sec-label{font-size:9px;color:#555;letter-spacing:.12em;text-transform:uppercase;padding:12px 8px 4px;font-weight:600}
+.sidebar-nav button{display:flex;align-items:center;gap:6px;width:100%;padding:6px 8px;border:none;background:transparent;font-size:11px;color:#999;cursor:pointer;font-family:var(--font);border-radius:4px;transition:var(--t);text-align:left;letter-spacing:.02em}
 .sidebar-nav button:hover{background:#2A2A2D;color:#CCC}
 .sidebar-nav button.active{background:#333;color:#FFF;font-weight:600}
-.sidebar-nav button .sb-icon{font-size:13px;opacity:.6;width:18px;text-align:center;flex-shrink:0}
+.sidebar-nav button .sb-icon{font-size:12px;opacity:.6;width:16px;text-align:center;flex-shrink:0}
 .sidebar-nav button.active .sb-icon{opacity:1}
 .sidebar-bottom{margin-top:auto;padding:16px 8px;border-top:1px solid rgba(255,255,255,.06)}
 .sidebar-bottom button{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border:none;background:transparent;font-size:11px;color:#777;cursor:pointer;font-family:var(--font);border-radius:4px;transition:var(--t);text-align:left}
@@ -60,7 +60,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 /* ============================================================
    MAIN — Creative canvas
    ============================================================ */
-.main{flex:1;margin-left:180px;padding:40px 48px}
+.main{flex:1;margin-left:170px;padding:36px 40px}
 .main-inner{width:100%}
 @media(max-width:768px){.main{padding:20px 16px}}
 .tab-content{display:none}
