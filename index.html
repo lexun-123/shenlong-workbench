@@ -57,7 +57,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 /* ============================================================
    MAIN — Full width canvas
    ============================================================ */
-.main{padding:32px 36px}
+.main{padding:32px 36px;overflow:visible}
 .main-inner{width:100%}
 @media(max-width:768px){.main{padding:20px 16px}}
 .tab-content{display:none}
@@ -96,7 +96,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .card-offset{background:var(--surface);border:1px solid var(--border);padding:16px;margin-right:-16px;transform:rotate(.5deg)}
 
 /* ======== BLEEDING IMAGE SECTION ======== */
-.bleed-row{display:flex;gap:0;margin:36px -40px;align-items:stretch;position:relative}
+.bleed-row{display:flex;gap:0;margin:36px -36px;align-items:stretch;position:relative}
 @media(max-width:768px){.bleed-row{flex-direction:column;margin:28px -16px}}
 .bleed-img{flex:1;min-height:220px;background:linear-gradient(135deg,#D0D0D0,#A0A0A0);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .bleed-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
@@ -104,16 +104,15 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .bleed-text{flex:1;background:var(--text);color:var(--bg);padding:36px;display:flex;flex-direction:column;justify-content:center}
 .bleed-text h4{font-size:32px;font-weight:900;margin-bottom:8px}
 .bleed-text p{font-size:14px;color:#A0A0A0;line-height:1.7}
-.bleed-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;background:var(--surface);border:2px solid var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;z-index:10;transition:var(--t)}
+.bleed-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;background:var(--surface);border:2px solid var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;z-index:20;transition:var(--t)}
 .bleed-nav:hover{background:var(--text);color:var(--bg)}
-.bleed-prev{left:-20px}.bleed-next{right:-20px}
-@media(max-width:768px){.bleed-prev{left:8px}.bleed-next{right:8px}}
+.bleed-prev{left:8px}.bleed-next{right:8px}
 .bleed-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10}
 .bleed-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:var(--t)}
 .bleed-dots span.active{background:#FFF}
 
 /* ======== DARK BREAK ======== */
-.dark-break{margin:36px -40px;background:var(--text);padding:40px 56px;color:var(--bg);display:flex;gap:32px;align-items:center}
+.dark-break{margin:36px -36px;background:var(--text);padding:40px 56px;color:var(--bg);display:flex;gap:32px;align-items:center}
 @media(max-width:768px){.dark-break{flex-direction:column;margin:28px -16px;padding:28px 24px}}
 .dark-break h3{font-size:24px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
 .dark-break p{font-size:12px;color:#8A8A8A;line-height:1.7}
